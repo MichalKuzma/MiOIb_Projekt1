@@ -47,6 +47,23 @@ public class Model {
         }
     }
     
+    public void heuristicsSolution() {
+        
+        randomSolution();
+        
+        int pom = getValueOfModel();
+        
+        for (int i = 0; i < n-1; i++) {
+            for (int j = i+1; j < n; j++) {
+                int changeValue = valueOfChanging2Items(i, j);
+                if (changeValue < 0) {
+                    change(i, j);                
+                    valueOfModel += changeValue;
+                }
+            }
+        }
+    }
+    
     public void randomChange() {
         Random random = new Random();
         
@@ -77,13 +94,67 @@ public class Model {
         }
         return ret;
     }
+    
+    private int valueOfChanging2Items(int x, int y) {
+        
+        int w = 0;
+        
+        for (int i = 0; i < n; i++) {
+            w -= (mProblemCase.getWeights()[x][i]
+                    * mProblemCase.getDistances()[solution[x]][solution[i]]);
+            w -= (mProblemCase.getWeights()[i][x]
+                    * mProblemCase.getDistances()[solution[i]][solution[x]]);
+            w -= (mProblemCase.getWeights()[y][i]
+                    * mProblemCase.getDistances()[solution[y]][solution[i]]);
+            w -= (mProblemCase.getWeights()[i][y]
+                    * mProblemCase.getDistances()[solution[i]][solution[y]]);
+        }
+        w += (mProblemCase.getWeights()[x][x]
+                * mProblemCase.getDistances()[solution[x]][solution[x]]);
+        w += (mProblemCase.getWeights()[x][y]
+                * mProblemCase.getDistances()[solution[x]][solution[y]]);
+        w += (mProblemCase.getWeights()[y][x]
+                * mProblemCase.getDistances()[solution[y]][solution[x]]);
+        w += (mProblemCase.getWeights()[y][y]
+                * mProblemCase.getDistances()[solution[y]][solution[y]]);
+        
+        change(x, y);
+        for (int i = 0; i < n; i++) {
+            w += (mProblemCase.getWeights()[x][i]
+                    * mProblemCase.getDistances()[solution[x]][solution[i]]);
+            w += (mProblemCase.getWeights()[i][x]
+                    * mProblemCase.getDistances()[solution[i]][solution[x]]);
+            w += (mProblemCase.getWeights()[y][i]
+                    * mProblemCase.getDistances()[solution[y]][solution[i]]);
+            w += (mProblemCase.getWeights()[i][y]
+                    * mProblemCase.getDistances()[solution[i]][solution[y]]);
+        }
+        w -= (mProblemCase.getWeights()[x][x]
+                * mProblemCase.getDistances()[solution[x]][solution[x]]);
+        w -= (mProblemCase.getWeights()[x][y]
+                * mProblemCase.getDistances()[solution[x]][solution[y]]);
+        w -= (mProblemCase.getWeights()[y][x]
+                * mProblemCase.getDistances()[solution[y]][solution[x]]);
+        w -= (mProblemCase.getWeights()[y][y]
+                * mProblemCase.getDistances()[solution[y]][solution[y]]);
+        change(x, y);
+        
+        return w;
+    }
 
     public int getValueOfModel() {
-        if (!modelEvaluated) {
+        if (!modelEvaluated) {            
             modelEvaluated = true;
             
-            //TODO obliczenie wartosci modelu
             valueOfModel = 0;
+            
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    valueOfModel += (mProblemCase.getWeights()[i][j]
+                            * mProblemCase.getDistances()
+                            [solution[i]][solution[j]]);
+                }
+            }
         }
         
         return valueOfModel;
