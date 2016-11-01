@@ -28,7 +28,7 @@ public class Main {
         System.out.println("Counter: " + Integer.toString(counter));
         System.out.println("Average time (milliseconds): "
                 + Double.toString((double)estimatedTime/(double)counter));
-        System.out.println("Average value of random: " + Double.toString((double)w/(double)counter));
+        System.out.println("Average value of random : " + Double.toString((double)w/(double)counter));
         
 
 //        HEURYSTICS
@@ -39,6 +39,28 @@ public class Main {
                 model.heuristicsSolution();
                 w += model.getValueOfModel();
         }
-        System.out.println("Average value of heurys: " + Double.toString((double)w/(double)counter));
+        System.out.println("Average value of heurys : " + Double.toString((double)w/(double)counter));
+    
+    
+//        LOCAL SEARCHs
+//        GREEDY
+        w = 0.0;
+        counter = 100;
+        for (int i = 0; i < counter; i++) {
+                Model model = new Model(problemCase);
+                model.greedyLocalSearch();
+                w += model.getValueOfModel();
+        }
+        System.out.println("Average value of greedy : " + Double.toString((double)w/(double)counter));
+        
+//        STEPPER
+        w = 0.0;
+        counter = 100;
+        for (int i = 0; i < counter; i++) {
+                Model model = new Model(problemCase);
+                model.stepperLocalSearch();
+                w += model.getValueOfModel();
+        }
+        System.out.println("Average value of stepper: " + Double.toString((double)w/(double)counter));
     }
 }

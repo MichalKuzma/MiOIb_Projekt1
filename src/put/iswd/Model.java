@@ -64,6 +64,67 @@ public class Model {
         }
     }
     
+    public void greedyLocalSearch() {
+        
+        randomSolution();
+        
+        int pom = getValueOfModel();
+        boolean end = false;
+        
+        while (!end) {
+            for (int i = 0; i < n-1; i++) {
+                for (int j = i+1; j < n; j++) {
+                    int changeValue = valueOfChanging2Items(i, j);
+                    if (changeValue < 0) {
+                        change(i, j);                
+                        valueOfModel += changeValue;
+                        end = false;
+                        break;
+                    } else {
+                        end = true;
+                    }
+                }
+                if (!end) {
+                    break;
+                }
+            }
+        }
+    }
+    
+    public void stepperLocalSearch() {
+        
+        randomSolution();
+        
+        int pom = getValueOfModel();
+        int best = 0;
+        int bestI = 0;
+        int bestJ = 0;
+        
+        boolean end = false;
+        
+        while (!end) {
+            for (int i = 0; i < n-1; i++) {
+                for (int j = i+1; j < n; j++) {
+                    int changeValue = valueOfChanging2Items(i, j);
+                    if (changeValue < best) {
+                        best = changeValue;
+                        bestI = i;
+                        bestJ = j;
+                    }
+                }
+            }
+            
+            if (best < 0) {
+                change(bestI, bestJ);                
+                valueOfModel += best;
+                best = 0;
+                end = false;
+            } else {
+                end = true;
+            }
+        }
+    }
+    
     public void randomChange() {
         Random random = new Random();
         
@@ -143,7 +204,7 @@ public class Model {
     }
 
     public int getValueOfModel() {
-        if (!modelEvaluated) {            
+        if (!modelEvaluated) {
             modelEvaluated = true;
             
             valueOfModel = 0;
