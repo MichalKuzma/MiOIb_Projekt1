@@ -45,15 +45,16 @@ public class Parser {
         while (weightsLinesSet < result.getN() && lineIndex < lines.size()) {
             String trimmedLine = lines.get(lineIndex).trim();
             String[] parts = trimmedLine.split(" ");
-            boolean valid = true;
-            if (parts.length != result.getN())
-                valid = false;
+            String[] nums = new String[result.getN()];
+            int partNum = 0;
             for (String part : parts)
-                if (!isInt(part))
-                    valid = false;
-            if (valid) {
-                for (int i = 0; i < parts.length; i++) {
-                    result.getWeights()[i][weightsLinesSet] = Integer.parseInt(parts[i]);
+                if (isInt(part)) {
+                    nums[partNum] = part;
+                    partNum += 1;
+                }
+            if (partNum == result.getN()) {
+                for (int i = 0; i < result.getN(); i++) {
+                    result.getWeights()[i][weightsLinesSet] = Integer.parseInt(nums[i]);
                 }
                 weightsLinesSet += 1;
             }
