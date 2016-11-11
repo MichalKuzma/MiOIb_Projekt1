@@ -11,7 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Created by Micha³ on 13.10.2016.
+ * Created by Michal on 13.10.2016.
  */
 public class Parser {
     private final static Charset ENCODING = StandardCharsets.UTF_8;

@@ -1,7 +1,7 @@
 package put.iswd;
 
 /**
- * Created by Micha³ on 13.10.2016.
+ * Created by Michal on 13.10.2016.
  */
 public class ProblemCase {
 

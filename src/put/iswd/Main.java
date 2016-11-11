@@ -1,75 +1,231 @@
 package put.iswd;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+            throws FileNotFoundException, IOException {
+        
+        String instance = args[0];
+        long minTime = Long.parseLong(args[1]) * 1000;
+        long minIterationNumber = Long.parseLong(args[2]);
+        
         Parser parser = new Parser();
-        ProblemCase problemCase = parser.parseFile("./data/qapdata/chr12a.dat");
+        ProblemCase problemCase = parser.parseFile(instance + ".dat");
+        
+//        Optimal solution
+        BufferedReader br = new BufferedReader(
+                new FileReader(instance + ".sln"));
+        String lines = "";
+        String line;
+        while ((line = br.readLine()) != null) {
+            lines = lines + line + " ";
+         }
+        lines = lines.trim().replaceAll(" +", " ");
+        String[] numbers = lines.split(" ");
+        
+        String optimalResult = numbers[1];
+        String optimalSolution = "";
+        for (int i = 2; i < numbers.length; i++) {
+            optimalSolution += numbers[i];
+            if (i < numbers.length - 1) {
+                optimalSolution += " ";
+            }
+        }
+        
+//        Algorithms      
+        long counter;
+        long startTime, endTime;
+        long algorithmStartTime, time;
 
-//        System.out.println(problemCase.toString());
-        
-        double w = 0;        
-        int counter = 0;
-//        long startTimeNano = System.nanoTime();
-        long startTime = System.currentTimeMillis();
-        
+//        GREEDY
+        counter = 0;
+        long avgTimeGreedy = 0;
+        algorithmStartTime = System.currentTimeMillis();
         do {
-            long partTime = System.currentTimeMillis();
-            int best = -1;
+            startTime = System.currentTimeMillis();
+            
+            Model model = new Model(problemCase);
+            model.greedyLocalSearch();
+            model.getValueOfModel();
+            
+            endTime = System.currentTimeMillis();
+            
+            time = endTime - startTime;
+            avgTimeGreedy += time;
+
+            printData("Greedy", model, optimalResult, optimalSolution, time);
+            counter++;
+        } while((counter < minIterationNumber)
+                || (System.currentTimeMillis() - algorithmStartTime < minTime));
+        avgTimeGreedy /= counter;
+        
+//        STEPPER
+        counter = 0;
+        long avgTimeStepper = 0;
+        algorithmStartTime = System.currentTimeMillis();
+        do {
+            startTime = System.currentTimeMillis();
+            
+            Model model = new Model(problemCase);
+            model.stepperLocalSearch();
+            model.getValueOfModel();
+            
+            endTime = System.currentTimeMillis();
+            
+            time = endTime - startTime;
+            avgTimeStepper += time;
+
+            printData("Steeper", model, optimalResult, optimalSolution, time);
+            counter++;
+        } while((counter < minIterationNumber)
+                || (System.currentTimeMillis() - algorithmStartTime < minTime));
+        avgTimeStepper /= counter;
+        
+//        RANDOM
+//        greedy time
+        counter = 0;
+        algorithmStartTime = System.currentTimeMillis();
+        do {
+            startTime = System.currentTimeMillis();
+            
+            Model bestModel = new Model(problemCase);
+            bestModel.randomSolution();
+            
             do {
                 Model model = new Model(problemCase);
                 model.randomSolution();
-                if (best < 0) {
-                    best = model.getValueOfModel();
-                } else if (best > model.getValueOfModel()) {
-                    best = model.getValueOfModel();
+                
+                if (bestModel.getValueOfModel() > model.getValueOfModel()) {
+                    bestModel = model;
                 }
-            } while (System.currentTimeMillis() - partTime < 100);
-            w += best;
+                
+                endTime = System.currentTimeMillis();
+                time = endTime - startTime;
+            } while (avgTimeGreedy > time);
+            
+            printData("Random [Greedy time]", bestModel, optimalResult,
+                    optimalSolution, time);
             counter++;
-        } while (System.currentTimeMillis() - startTime < 1000);
+        } while((counter < minIterationNumber)
+                || (System.currentTimeMillis() - algorithmStartTime < minTime));
         
-//        long estimatedTimeNano = System.nanoTime() - startTimeNano;
-        long estimatedTime = System.currentTimeMillis() - startTime;
-        
-//        System.out.println("Estimatet time in nanoseconds: " + Long.toString(estimatedTimeNano));
-        System.out.println("Estimatet time in milliseconds: " + Long.toString(estimatedTime));
-        System.out.println("Counter: " + Integer.toString(counter));
-        System.out.println("Average time (milliseconds): "
-                + Double.toString((double)estimatedTime/(double)counter));
-        System.out.println("Average value of random : " + Double.toString((double)w/(double)counter));
-        
+//        stepper time
+        counter = 0;
+        algorithmStartTime = System.currentTimeMillis();
+        do {
+            startTime = System.currentTimeMillis();
+            
+            Model bestModel = new Model(problemCase);
+            bestModel.randomSolution();
+            
+            do {
+                Model model = new Model(problemCase);
+                model.randomSolution();
+                
+                if (bestModel.getValueOfModel() > model.getValueOfModel()) {
+                    bestModel = model;
+                }
+                
+                endTime = System.currentTimeMillis();
+                time = endTime - startTime;
+            } while (avgTimeStepper > time);
+            
+            printData("Random [Stepper time]", bestModel, optimalResult,
+                    optimalSolution, time);
+            counter++;
+        } while((counter < minIterationNumber)
+                || (System.currentTimeMillis() - algorithmStartTime < minTime));
 
 //        HEURYSTICS
-        w = 0.0;
-        counter = 1000;
-        for (int i = 0; i < counter; i++) {
+//        greedy time
+        counter = 0;
+        algorithmStartTime = System.currentTimeMillis();
+        do {
+            startTime = System.currentTimeMillis();
+            
+            Model bestModel = new Model(problemCase);
+            bestModel.heuristicsSolution();
+            
+            do {
                 Model model = new Model(problemCase);
                 model.heuristicsSolution();
-                w += model.getValueOfModel();
-        }
-        System.out.println("Average value of heurys : " + Double.toString((double)w/(double)counter));
-    
-    
-//        LOCAL SEARCHs
-//        GREEDY
-        w = 0.0;
-        counter = 100;
-        for (int i = 0; i < counter; i++) {
-                Model model = new Model(problemCase);
-                model.greedyLocalSearch();
-                w += model.getValueOfModel();
-        }
-        System.out.println("Average value of greedy : " + Double.toString((double)w/(double)counter));
+                
+                if (bestModel.getValueOfModel() > model.getValueOfModel()) {
+                    bestModel = model;
+                }
+                
+                endTime = System.currentTimeMillis();
+                time = endTime - startTime;
+            } while (avgTimeGreedy > time);
+            
+            printData("Heuristics [Greedy time]", bestModel, optimalResult,
+                    optimalSolution, time);
+            counter++;
+        } while((counter < minIterationNumber)
+                || (System.currentTimeMillis() - algorithmStartTime < minTime));
         
-//        STEPPER
-        w = 0.0;
-        counter = 100;
-        for (int i = 0; i < counter; i++) {
+//        stepper time
+        counter = 0;
+        algorithmStartTime = System.currentTimeMillis();
+        do {
+            startTime = System.currentTimeMillis();
+            
+            Model bestModel = new Model(problemCase);
+            bestModel.heuristicsSolution();
+            
+            do {
                 Model model = new Model(problemCase);
-                model.stepperLocalSearch();
-                w += model.getValueOfModel();
-        }
-        System.out.println("Average value of stepper: " + Double.toString((double)w/(double)counter));
+                model.heuristicsSolution();
+                
+                if (bestModel.getValueOfModel() > model.getValueOfModel()) {
+                    bestModel = model;
+                }
+                
+                endTime = System.currentTimeMillis();
+                time = endTime - startTime;
+            } while (avgTimeStepper > time);
+            
+            printData("Heuristics [Stepper time]", bestModel, optimalResult,
+                    optimalSolution, time);
+            counter++;
+        } while((counter < minIterationNumber)
+                || (System.currentTimeMillis() - algorithmStartTime < minTime));
+    }
+    
+    public static void printData(String algorithmName, Model model,
+            String optimalResult, String optimalSolution, long time) {
+        
+        //algorithm name
+        System.out.print(algorithmName);
+        System.out.print(";");
+
+        //achieved result
+        System.out.print(model.getValueOfModel());
+        System.out.print(";");
+
+        //optimal result
+        System.out.print(optimalResult);
+        System.out.print(";");
+
+        //founded permutation
+        System.out.print(model.toString());
+        System.out.print(";");
+
+        //optimal permutation
+        System.out.print(optimalSolution);
+        System.out.print(";");
+
+        //running time in milliseconds
+        System.out.print(time);
+        System.out.print(";");
+        
+        //instance size
+        System.out.print(model.getN());
+        System.out.println("");
     }
 }

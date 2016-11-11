@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package put.iswd;
 
 import java.util.Random;
@@ -51,7 +46,7 @@ public class Model {
         
         randomSolution();
         
-        int pom = getValueOfModel();
+        getValueOfModel();
         
         for (int i = 0; i < n-1; i++) {
             for (int j = i+1; j < n; j++) {
@@ -68,7 +63,7 @@ public class Model {
         
         randomSolution();
         
-        int pom = getValueOfModel();
+        getValueOfModel();
         boolean end = false;
         
         while (!end) {
@@ -151,7 +146,9 @@ public class Model {
         String ret = "";
         for (int i = 0; i < n; i++) {
             ret += Integer.toString(solution[i]);
-            ret += " ";
+            if (i < n-1) {
+                ret += " ";
+            }
         }
         return ret;
     }
@@ -223,5 +220,9 @@ public class Model {
             
     public int[] getSolution() {
         return solution;
+    }
+
+    public int getN() {
+        return n;
     }
 }
