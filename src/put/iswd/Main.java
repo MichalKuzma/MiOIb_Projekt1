@@ -14,9 +14,18 @@ public class Main {
         long startTime = System.currentTimeMillis();
         
         do {
-            Model model = new Model(problemCase);
-            model.randomSolution();
-            w += model.getValueOfModel();
+            long partTime = System.currentTimeMillis();
+            int best = -1;
+            do {
+                Model model = new Model(problemCase);
+                model.randomSolution();
+                if (best < 0) {
+                    best = model.getValueOfModel();
+                } else if (best > model.getValueOfModel()) {
+                    best = model.getValueOfModel();
+                }
+            } while (System.currentTimeMillis() - partTime < 100);
+            w += best;
             counter++;
         } while (System.currentTimeMillis() - startTime < 1000);
         
