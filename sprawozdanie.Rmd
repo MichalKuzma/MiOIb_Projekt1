@@ -1,0 +1,109 @@
+---
+title: "Algorytmy rozwi¹zuj¹ce problem QAP"
+author: "Micha³ KuŸma i Micha³ Biernacki"
+date: "11 listopada 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(dplyr)
+library(ggplot2)
+opts_chunk$set(echo = FALSE, warning = FALSE, tidy = TRUE, message = FALSE)
+```
+
+```{r func_def}
+## Summarizes data.
+## Gives count, mean, standard deviation, standard error of the mean, and confidence interval (default 95%).
+##   data: a data frame.
+##   measurevar: the name of a column that contains the variable to be summariezed
+##   groupvars: a vector containing names of columns that contain grouping variables
+##   na.rm: a boolean that indicates whether to ignore NA's
+##   conf.interval: the percent range of the confidence interval (default is 95%)
+summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
+                      conf.interval=.95, .drop=TRUE) {
+  
+  library(plyr)
+
+    # New version of length which can handle NA's: if na.rm==T, don't count them
+    length2 <- function (x, na.rm=FALSE) {
+        if (na.rm) sum(!is.na(x))
+        else       length(x)
+    }
+
+    # This does the summary. For each group's data frame, return a vector with
+    # N, mean, and sd
+    datac <- ddply(data, groupvars, .drop=.drop,
+      .fun = function(xx, col) {
+        c(N    = length2(xx[[col]], na.rm=na.rm),
+          mean = mean   (xx[[col]], na.rm=na.rm),
+          sd   = sd     (xx[[col]], na.rm=na.rm)
+        )
+      },
+      measurevar
+    )
+
+    # Rename the "mean" column    
+    datac <- rename(datac, c("mean" = measurevar))
+
+    datac$se <- datac$sd / sqrt(datac$N)  # Calculate standard error of the mean
+
+    # Confidence interval multiplier for standard error
+    # Calculate t-statistic for confidence interval: 
+    # e.g., if conf.interval is .95, use .975 (above/below), and use df=N-1
+    ciMult <- qt(conf.interval/2 + .5, datac$N-1)
+    datac$ci <- datac$se * ciMult
+
+    
+    library(dplyr)
+    return(datac)
+}
+```
+
+## Opis problemu
+
+QAP (Quadratic assignment problem) reprezentuje nastêpuj¹ce zadanie:
+
+*Dane s¹ zbiory n lokalizacji i n oœrodków. Ka¿da para lokacji znajduje siê w okreœlonej odleg³oœci od siebie, a dla ka¿dej pary oœrodków znany jest przep³yw. Celem jest takie przypisanie oœrodków do lokalizacji, aby zminimalizowaæ sumê iloczynów odleg³oœci i przep³ywów.*
+
+Problem wykorzystywany jest czêsto do zamodelowania zadania rozmieszczenia fabryk (oœrodków) w zestawie znanych lokalizacji. Jako przep³ywy podane s¹ wówczas interakcje, w jakie fabryki wchodz¹ wzajemnie (transport surowców, etc.).
+
+## Operator s¹siedztwa
+
+
+## Porównanie dzia³ania algorytmów
+
+```{r load_data}
+data <- read.csv2("qap_algorithms.csv", col.names = c("name", "result", "opt_result", "perm", "opt_perm", "time", "inst_size", "inst_name"),
+                  dec = ".")
+data <- data %>%
+  mutate(result_dist = (result - opt_result) / opt_result)
+```
+
+## Greedy Local Search
+
+Algorytm *Greedy Local Search* jest algorytmem przeszukiwania lokalnego, który przechodzi do pierwszego znalezionego lepszego s¹siada. Dziêki temu, przeszukiwanie s¹siedztwa jest krótsze, ale algorytm mo¿e wykonaæ wiêcej kroków.
+
+```{r results_compare}
+data_results <- data %>%
+  summarySE(measurevar = "result_dist", groupvars = c("name", "inst_size"))
+
+ggplot(data_results, aes(x = inst_size, y = result_dist)) +
+  geom_errorbar(aes(ymin = result_dist-se, ymax = result_dist+se), width=.1) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~ name, ncol = 2) +
+  theme_bw()
+```
+
+```{r times_compare}
+data_times <- data %>%
+  summarySE(measurevar = "time", groupvars = c("name", "inst_size"))
+
+ggplot(data_times, aes(x = inst_size, y = time)) +
+  geom_errorbar(aes(ymin = time-se, ymax = time+se), width=.1) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~ name, ncol = 2) +
+  theme_bw()
+```

@@ -1,12 +1,10 @@
 package put.iswd;
 
-import java.io.IOException;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,64 +18,27 @@ public class Parser {
     public ProblemCase parseFile(String fileName) {
         ProblemCase result = new ProblemCase();
 
-        Path filePath = Paths.get(fileName);
-        List<String> lines;
+        Scanner scanner = null;
         try {
-            lines = Files.readAllLines(filePath, ENCODING);
-        } catch (IOException e) {
+            scanner = new Scanner(new File(fileName));
+        } catch (FileNotFoundException e) {
             LOGGER.log(Level.SEVERE, "Encountered problem while parsing file:\n" + e.toString(), e);
             return null;
         }
 
-        int lineIndex = 0;
+        result.setN(scanner.nextInt());
 
-        boolean nSet = false;
-        while (!nSet && lineIndex < lines.size()) {
-            String trimmedLine = lines.get(lineIndex).trim();
-            if (isInt(trimmedLine)) {
-                result.setN(Integer.parseInt(trimmedLine));
-                nSet = true;
+        for (int i = 0; i < result.getN(); i++) {
+            for (int j = 0; j < result.getN(); j++) {
+                result.getWeights()[i][j] = scanner.nextInt();
             }
-            lineIndex += 1;
         }
 
-        int weightsLinesSet = 0;
-        while (weightsLinesSet < result.getN() && lineIndex < lines.size()) {
-            String trimmedLine = lines.get(lineIndex).trim();
-            String[] parts = trimmedLine.split(" ");
-            String[] nums = new String[result.getN()];
-            int partNum = 0;
-            for (String part : parts)
-                if (isInt(part)) {
-                    nums[partNum] = part;
-                    partNum += 1;
-                }
-            if (partNum == result.getN()) {
-                for (int i = 0; i < result.getN(); i++) {
-                    result.getWeights()[i][weightsLinesSet] = Integer.parseInt(nums[i]);
-                }
-                weightsLinesSet += 1;
-            }
-            lineIndex += 1;
-        }
 
-        int distancesLinesSet = 0;
-        while (distancesLinesSet < result.getN() && lineIndex < lines.size()) {
-            String trimmedLine = lines.get(lineIndex).trim();
-            String[] parts = trimmedLine.split("\\s+");
-            boolean valid = true;
-            if (parts.length != result.getN())
-                valid = false;
-            for (String part : parts)
-                if (!isInt(part))
-                    valid = false;
-            if (valid) {
-                for (int i = 0; i < parts.length; i++) {
-                    result.getDistances()[i][distancesLinesSet] = Integer.parseInt(parts[i]);
-                }
-                distancesLinesSet += 1;
+        for (int i = 0; i < result.getN(); i++) {
+            for (int j = 0; j < result.getN(); j++) {
+                result.getDistances()[i][j] = scanner.nextInt();
             }
-            lineIndex += 1;
         }
 
         return result;

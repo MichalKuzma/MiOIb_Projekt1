@@ -86,7 +86,7 @@ public class Model {
         }
     }
     
-    public void stepperLocalSearch() {
+    public void steepestLocalSearch() {
         
         randomSolution();
         
