@@ -146,38 +146,38 @@ public class Main {
                     time = endTime - startTime;
                 } while (avgTimeGreedy > time);
 
-                resultFile.write(getResults("Random [Greedy time]", bestModel, optimalResult,
+                resultFile.write(getResults("Random", bestModel, optimalResult,
                         optimalSolution, time, instance));
                 counter++;
             } while ((counter < minIterationNumber)
                     || (System.currentTimeMillis() - algorithmStartTime < minTime));
 
             //        Steepest time
-            counter = 0;
-            algorithmStartTime = System.currentTimeMillis();
-            do {
-                startTime = System.currentTimeMillis();
-
-                Model bestModel = new Model(problemCase);
-                bestModel.randomSolution();
-
-                do {
-                    Model model = new Model(problemCase);
-                    model.randomSolution();
-
-                    if (bestModel.getValueOfModel() > model.getValueOfModel()) {
-                        bestModel = model;
-                    }
-
-                    endTime = System.currentTimeMillis();
-                    time = endTime - startTime;
-                } while (avgTimeSteepest > time);
-
-                resultFile.write(getResults("Random [Steepest time]", bestModel, optimalResult,
-                        optimalSolution, time, instance));
-                counter++;
-            } while ((counter < minIterationNumber)
-                    || (System.currentTimeMillis() - algorithmStartTime < minTime));
+//            counter = 0;
+//            algorithmStartTime = System.currentTimeMillis();
+//            do {
+//                startTime = System.currentTimeMillis();
+//
+//                Model bestModel = new Model(problemCase);
+//                bestModel.randomSolution();
+//
+//                do {
+//                    Model model = new Model(problemCase);
+//                    model.randomSolution();
+//
+//                    if (bestModel.getValueOfModel() > model.getValueOfModel()) {
+//                        bestModel = model;
+//                    }
+//
+//                    endTime = System.currentTimeMillis();
+//                    time = endTime - startTime;
+//                } while (avgTimeSteepest > time);
+//
+//                resultFile.write(getResults("Random [Steepest time]", bestModel, optimalResult,
+//                        optimalSolution, time, instance));
+//                counter++;
+//            } while ((counter < minIterationNumber)
+//                    || (System.currentTimeMillis() - algorithmStartTime < minTime));
 
             //        HEURISTICS
             //        greedy time
@@ -201,38 +201,38 @@ public class Main {
                     time = endTime - startTime;
                 } while (avgTimeGreedy > time);
 
-                resultFile.write(getResults("Heuristics [Greedy time]", bestModel, optimalResult,
+                resultFile.write(getResults("Heuristics", bestModel, optimalResult,
                         optimalSolution, time, instance));
                 counter++;
             } while ((counter < minIterationNumber)
                     || (System.currentTimeMillis() - algorithmStartTime < minTime));
 
             //        steepest time
-            counter = 0;
-            algorithmStartTime = System.currentTimeMillis();
-            do {
-                startTime = System.currentTimeMillis();
-
-                Model bestModel = new Model(problemCase);
-                bestModel.heuristicsSolution();
-
-                do {
-                    Model model = new Model(problemCase);
-                    model.heuristicsSolution();
-
-                    if (bestModel.getValueOfModel() > model.getValueOfModel()) {
-                        bestModel = model;
-                    }
-
-                    endTime = System.currentTimeMillis();
-                    time = endTime - startTime;
-                } while (avgTimeSteepest > time);
-
-                resultFile.write(getResults("Heuristics [Steepest time]", bestModel, optimalResult,
-                        optimalSolution, time, instance));
-                counter++;
-            } while ((counter < minIterationNumber)
-                    || (System.currentTimeMillis() - algorithmStartTime < minTime));
+//            counter = 0;
+//            algorithmStartTime = System.currentTimeMillis();
+//            do {
+//                startTime = System.currentTimeMillis();
+//
+//                Model bestModel = new Model(problemCase);
+//                bestModel.heuristicsSolution();
+//
+//                do {
+//                    Model model = new Model(problemCase);
+//                    model.heuristicsSolution();
+//
+//                    if (bestModel.getValueOfModel() > model.getValueOfModel()) {
+//                        bestModel = model;
+//                    }
+//
+//                    endTime = System.currentTimeMillis();
+//                    time = endTime - startTime;
+//                } while (avgTimeSteepest > time);
+//
+//                resultFile.write(getResults("Heuristics [Steepest time]", bestModel, optimalResult,
+//                        optimalSolution, time, instance));
+//                counter++;
+//            } while ((counter < minIterationNumber)
+//                    || (System.currentTimeMillis() - algorithmStartTime < minTime));
         }
 
         resultFile.close();
@@ -272,6 +272,18 @@ public class Main {
 
         //instance name
         builder.append(instanceName);
+        builder.append(";");
+
+        //initial permutation
+        builder.append(model.getInitialSolution());
+        builder.append(";");
+
+        //reviewed neighbours
+        builder.append(model.getReviewedNeighbours());
+        builder.append(";");
+
+        //steps counter
+        builder.append(model.getStepsCounter());
         builder.append("\n");
 
         return builder.toString();

@@ -13,12 +13,16 @@ public class Model {
     private final int n;
     private int valueOfModel;
     private boolean modelEvaluated;
+    private int[] initialSolution;
+    private int reviewedNeighbours;
+    private int stepsCounter;
     
     public Model(ProblemCase problemCase) {
         mProblemCase = problemCase;
         n = mProblemCase.getN();
         solution = new int[n];
         modelEvaluated = false;
+        initialSolution = new int[n];
     }
     
     public void randomSolution() {
@@ -62,13 +66,18 @@ public class Model {
     public void greedyLocalSearch() {
         
         randomSolution();
+        System.arraycopy(this.solution, 0, initialSolution, 0, this.n);
         
         getValueOfModel();
         boolean end = false;
-        
+
+        reviewedNeighbours = 0;
+        stepsCounter = 0;
         while (!end) {
+            stepsCounter = getStepsCounter() + 1;
             for (int i = 0; i < n-1; i++) {
                 for (int j = i+1; j < n; j++) {
+                    reviewedNeighbours = getReviewedNeighbours() + 1;
                     int changeValue = valueOfChanging2Items(i, j);
                     if (changeValue < 0) {
                         change(i, j);                
@@ -89,6 +98,7 @@ public class Model {
     public void steepestLocalSearch() {
         
         randomSolution();
+        System.arraycopy(this.solution, 0, this.initialSolution, 0, this.n);
         
         int pom = getValueOfModel();
         int best = 0;
@@ -96,10 +106,14 @@ public class Model {
         int bestJ = 0;
         
         boolean end = false;
-        
+
+        reviewedNeighbours = 0;
+        stepsCounter = 0;
         while (!end) {
+            stepsCounter += 1;
             for (int i = 0; i < n-1; i++) {
                 for (int j = i+1; j < n; j++) {
+                    reviewedNeighbours += 1;
                     int changeValue = valueOfChanging2Items(i, j);
                     if (changeValue < best) {
                         best = changeValue;
@@ -224,5 +238,24 @@ public class Model {
 
     public int getN() {
         return n;
+    }
+
+    public String getInitialSolution() {
+        String ret = "";
+        for (int i = 0; i < n; i++) {
+            ret += Integer.toString(initialSolution[i]);
+            if (i < n-1) {
+                ret += " ";
+            }
+        }
+        return ret;
+    }
+
+    public int getReviewedNeighbours() {
+        return reviewedNeighbours;
+    }
+
+    public int getStepsCounter() {
+        return stepsCounter;
     }
 }

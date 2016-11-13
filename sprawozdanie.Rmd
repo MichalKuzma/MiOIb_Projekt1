@@ -2,7 +2,9 @@
 title: "Algorytmy rozwi¹zuj¹ce problem QAP"
 author: "Micha³ KuŸma i Micha³ Biernacki"
 date: "11 listopada 2016"
-output: html_document
+output: 
+  html_document: 
+    keep_md: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -37,7 +39,8 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
       .fun = function(xx, col) {
         c(N    = length2(xx[[col]], na.rm=na.rm),
           mean = mean   (xx[[col]], na.rm=na.rm),
-          sd   = sd     (xx[[col]], na.rm=na.rm)
+          sd   = sd     (xx[[col]], na.rm=na.rm),
+          min = min     (xx[[col]], na.rm=na.rm)
         )
       },
       measurevar
@@ -60,6 +63,13 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
 }
 ```
 
+```{r load_data}
+data <- read.csv2("qap_algorithms.csv", col.names = c("name", "result", "opt_result", "perm", "opt_perm", "time", "inst_size", "inst_name", "init_perm", "rev_neigh", "steps_count"),
+                  dec = ".")
+data <- data %>%
+  mutate(result_dist = (result - opt_result) / opt_result)
+```
+
 ## Opis problemu
 
 QAP (Quadratic assignment problem) reprezentuje nastêpuj¹ce zadanie:
@@ -68,21 +78,87 @@ QAP (Quadratic assignment problem) reprezentuje nastêpuj¹ce zadanie:
 
 Problem wykorzystywany jest czêsto do zamodelowania zadania rozmieszczenia fabryk (oœrodków) w zestawie znanych lokalizacji. Jako przep³ywy podane s¹ wówczas interakcje, w jakie fabryki wchodz¹ wzajemnie (transport surowców, etc.).
 
+Poniewa¿ problem nale¿y do grupy NP-trudnych, nie jest znany algorytm, który pozwoli³by na znalezienie dok³adnego rozwi¹zania w czasie wielomianowym. W celu osi¹gniêcia zadowalaj¹cych wyników czasowych uzyskuj¹c dobre rozwi¹zanie, wykorzystuje siê algorytmy heurystyczne i metaheurystyki.
+
 ## Operator s¹siedztwa
 
+W projekcie korzystano z operatora s¹siedztwa 2-OPT, który dla ka¿dej permutacji zwraca s¹siedztwo z³o¿one ze wszystkich permutacji uzyskanych przez zamianê dwóch pozycji miejscami.
 
-## Porównanie dzia³ania algorytmów
+Wykorzystanie tego operatora sprawia, ¿e wielkoœæ s¹siedztwa ka¿dej permutacji wynosi n<sup>2</sup> (gdzie n to d³ugoœæ permutacji).
 
-```{r load_data}
-data <- read.csv2("qap_algorithms.csv", col.names = c("name", "result", "opt_result", "perm", "opt_perm", "time", "inst_size", "inst_name"),
-                  dec = ".")
-data <- data %>%
-  mutate(result_dist = (result - opt_result) / opt_result)
+## Krótki opis zaimplementowanych algorytmów
+
+### Random Search
+
+Algorytm przeszukiwania losowego (Random Search) jest najprostszym z wykorzystanych w projekcie. Przez okreœlony czas losuje on rozwi¹zania i na koniec zwraca najlepsze z nich. Parametr czasowy stanowi jedyne kryterium stopu algorytmu.
+
+### Local Search
+
+Algorytm przeszukiwania lokalnego (Local Search) wyszukuje lepsze rozwi¹zania w zbiorach s¹siedztwa a¿ do osi¹gniêcia optimum lokalnego. Nie daje jednak ¿adnej gwarancji odnalezienia optimum globalnego. Algorytm zosta³ zaimplementowany w dwóch wersjach ró¿ni¹cych siê sposobem wyboru s¹siada, do którego algorytm powinien przejœæ.
+
+- *Greedy Local Search* wybiera pierwszego s¹siada, który jest lepszy od obecnie rozpatrywanego rozwi¹zania.
+- *Steepest Local Search* przeszukuje ca³e s¹siedztwo wybieraj¹c najlepszego s¹siada i przechodzi do niego, jeœli jest lepszy od obecnego rozwi¹zania.
+
+Przeprowadzono eksperyment zliczaj¹cy, ilu s¹siadów oceniaj¹ obie wersje algorytmu, oraz ile kroków robi¹. Wyniki przedstawiono na poni¿szych wykresach. W celu lepszej czytelnoœci wykresów, pominiêto wyniki dwóch najwiêkszych instancji.
+
+```{r gs_compare}
+data_results <- data %>%
+  filter(name == "Greedy" | name == "Steepest", inst_size < 100) %>%
+  summarySE(measurevar = "rev_neigh", groupvars = c("name", "inst_size"))
+
+ggplot(data_results, aes(x = inst_size, y = rev_neigh)) +
+  geom_errorbar(aes(ymin = rev_neigh-se, ymax = rev_neigh+se), width=.1) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~ name, ncol = 2) +
+  ggtitle("Liczba s¹siadów ocenionych przez algorytm w jednej iteracji") +
+  xlab("Rozmiar instancji problemu") +
+  ylab("Liczba ocenionych s¹siadów") +
+  theme_bw()
+
+data_results <- data %>%
+  filter(name == "Greedy" | name == "Steepest", inst_size < 100) %>%
+  summarySE(measurevar = "steps_count", groupvars = c("name", "inst_size"))
+
+ggplot(data_results, aes(x = inst_size, y = steps_count)) +
+  geom_errorbar(aes(ymin = steps_count-se, ymax = steps_count+se), width=.1) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~ name, ncol = 2) +
+  ggtitle("Liczba kroków wykonanych przez algorytm w jednej iteracji") +
+  xlab("Rozmiar instancji problemu") +
+  ylab("Liczba wykonanych kroków") +
+  theme_bw()
 ```
 
-## Greedy Local Search
+Powy¿sze wykresy pokazuj¹, ¿e w pe³nej iteracji obie wersje oceniaj¹ zbli¿on¹ liczbê rozwi¹zañ, jednak zazwyczaj *Steepest* ocenia ich wiêcej. Eksperyment pokaza³ równie¿, ¿e algorytm *Steepest*, który dok³adnie wybiera zawsze najlepsze kolejne rozwi¹zanie wykonuje w pe³nej iteracji wiêcej kroków (dla ka¿dej badanej instancji problemu).
 
-Algorytm *Greedy Local Search* jest algorytmem przeszukiwania lokalnego, który przechodzi do pierwszego znalezionego lepszego s¹siada. Dziêki temu, przeszukiwanie s¹siedztwa jest krótsze, ale algorytm mo¿e wykonaæ wiêcej kroków.
+### Heurystyka
+
+Algorytm heurystyczny buduje rozwi¹zanie w oparciu o predefiniowane regu³y, które zgodnie z za³o¿eniem maj¹ prowadziæ do dobrego wyniku. Zapproponowana w projekcie heurystyka dzia³a analogicznie do sortowania b¹belkowego. Po wylosowaniu permutacji startowej wybierany jest najkorzystniejszy w obecnym krajobrazie element na kolejne pozycje (0, 1, 2, ...).
+
+```
+  solution = randomSolution()
+  value = solution.getValue()
+  
+  for (i = 0; i < n; i++) {
+    for (j = i + 1; j < n; j++) {
+      changeValue = valueOfChangingItemsAtPositions(i, j)
+      if (changeValue < 0) {
+        changeElementsAtPositions(i, j)
+        value += changeValue
+      }
+    }
+  }
+```
+
+## Porównanie odleg³oœci od optimum rozwi¹zañ uzyskanych przez badane algorytmy
+
+Do okreœlenia odleg³oœci od optimum globalnego wykorzystano miarê opisan¹ wzorem:
+
+$dist = \frac{Opt_{L} - Opt_{G}}{Opt_{G}}$
+
+Dla ka¿dej badanej instancji wykonano 10 pomiarów. Porównano wyniki œrednie, oraz najlepsze. Wyniki pomiarów zosta³y przedstawione na poni¿szych wykresach.
 
 ```{r results_compare}
 data_results <- data %>%
@@ -93,11 +169,37 @@ ggplot(data_results, aes(x = inst_size, y = result_dist)) +
   geom_line() +
   geom_point() +
   facet_wrap(~ name, ncol = 2) +
+  ggtitle("Œrednia odleg³oœæ uzyskanego przez algorytm rozwi¹zania od optimum globalnego") +
+  xlab("Rozmiar instancji problemu") +
+  ylab("Odleg³oœæ od optimum") +
   theme_bw()
 ```
 
+Zaobserwowaæ mo¿na wysok¹ niestabilnoœæ uzyskanych wyników dla ma³ych instancji problemu (du¿e odchylenia standardowe dla ka¿dego algorytmu). Istotny jest równie¿ charakter malej¹cy przedstawionych relacji. Dla wiêkszywch instancji problemu odleg³oœæ wzglêdna od optimum jest bardzo niewielka. 
+
+
+```{r best_results_compare}
+ggplot(data_results, aes(x = inst_size, y = min)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~ name, ncol = 2) +
+  ggtitle("Minimalna odleg³oœæ uzyskanego przez algorytm rozwi¹zania od optimum globalnego") +
+  xlab("Rozmiar instancji problemu") +
+  ylab("Odleg³oœæ od optimum") +
+  theme_bw()
+```
+
+Po rozpatrzeniu najlepszego zamiast œredniego rozwi¹zania, charakter malej¹cy jest ju¿ s³abiej zauwa¿alny. Najmniejsze odleg³oœci wystêpuj¹ dla instancji najmniejszych i najwiêkszych, podczas gdy instancje o poœredniej wielkoœci maj¹ najwiêksz¹ wzglêdn¹ odleg³oœæ od optimum.
+
+Algorytmy *Greedy* i *Steepest* osi¹gaj¹ bardzo podobne œrednie rozwi¹zania. Zaproponowana heurystyka zwraca nieznacznie gorsze rozwi¹zania od algorytmów przeszukiwania lokalnego, natomiast *Random* osi¹ga rozwi¹zania daleko gorsze od pozosta³ych.
+
+Warty podkreœlenia jest jeszcze wyraŸnie banalny charakter instancji problemu o rozmiarze 26 (wszystkie algorytmy osi¹gnê³y rozwi¹zania bardzo bliskie optimum globalnemu).
+
+## Porównanie czasów wykonywania algorytmów
+
 ```{r times_compare}
 data_times <- data %>%
+  filter(inst_size < 100) %>%
   summarySE(measurevar = "time", groupvars = c("name", "inst_size"))
 
 ggplot(data_times, aes(x = inst_size, y = time)) +
@@ -105,5 +207,19 @@ ggplot(data_times, aes(x = inst_size, y = time)) +
   geom_line() +
   geom_point() +
   facet_wrap(~ name, ncol = 2) +
+  ggtitle("Œredni czas dzia³ania algorytmu w milisekundach") +
+  xlab("Rozmiar instancji problemu") +
+  ylab("Czas dzia³ania algorytmu") +
+  theme_bw()
+```
+
+```{r best_times_compare}
+ggplot(data_times, aes(x = inst_size, y = min)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~ name, ncol = 2) +
+  ggtitle("Najkrótszy czas dzia³ania algorytmu w milisekundach") +
+  xlab("Rozmiar instancji problemu") +
+  ylab("Czas dzia³ania algorytmu") +
   theme_bw()
 ```
