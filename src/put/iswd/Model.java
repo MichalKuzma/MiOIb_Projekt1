@@ -218,18 +218,28 @@ public class Model {
         if (!modelEvaluated) {
             modelEvaluated = true;
             
-            valueOfModel = 0;
-            
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    valueOfModel += (mProblemCase.getWeights()[i][j]
-                            * mProblemCase.getDistances()
-                            [solution[i]][solution[j]]);
-                }
-            }
+            valueOfModel = getValueOfPermutation(solution);
         }
         
         return valueOfModel;
+    }
+
+    public int getValueOfInitSolution() {
+        return getValueOfPermutation(initialSolution);
+    }
+
+    private int getValueOfPermutation(int[] permutation) {
+        int result = 0;
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                result += (mProblemCase.getWeights()[i][j]
+                        * mProblemCase.getDistances()
+                        [permutation[i]][permutation[j]]);
+            }
+        }
+
+        return result;
     }
             
     public int[] getSolution() {

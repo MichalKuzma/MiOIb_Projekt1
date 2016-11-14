@@ -41,7 +41,7 @@ Przeprowadzono eksperyment zliczający, ilu sąsiadów oceniają obie wersje alg
 
 ![](sprawozdanie_files/figure-html/gs_compare-1.png)<!-- -->![](sprawozdanie_files/figure-html/gs_compare-2.png)<!-- -->
 
-Powyższe wykresy pokazują, że w pełnej iteracji obie wersje oceniają zbliżoną liczbę rozwiązań, jednak zazwyczaj *Steepest* ocenia ich więcej. Eksperyment pokazał również, że algorytm *Steepest*, który dokładnie wybiera zawsze najlepsze kolejne rozwiązanie wykonuje w pełnej iteracji więcej kroków (dla każdej badanej instancji problemu).
+Powyższe wykresy pokazują, że w pełnej iteracji obie wersje oceniają zbliżoną liczbę rozwiązań, jednak zazwyczaj *Steepest* ocenia ich więcej. Eksperyment pokazał również, że algorytm *Steepest*, który dokładnie wybiera zawsze najlepsze kolejne rozwiązanie wykonuje w pełnej iteracji zauważalnie mniej kroków (dla każdej badanej instancji problemu).
 
 ### Heurystyka
 
@@ -88,3 +88,21 @@ Warty podkreślenia jest jeszcze wyraźnie banalny charakter instancji problemu 
 ![](sprawozdanie_files/figure-html/times_compare-1.png)<!-- -->
 
 ![](sprawozdanie_files/figure-html/best_times_compare-1.png)<!-- -->
+
+Przedstawione powyżej wykresy czasu trwania iteracji algorytmów pokazują wzrost czasu trwania algorytmu wraz ze wzrostem wielkości instancji (czego można się było spodziewać). Wykresy średniego czasu działania pokazują rosnącą niestabilność mierzonego czasu. Średni czas wykonywania algorytmu lokalnego przeszukiwania jest podobny w obu wersjach (*Greedy* i *Steepest*) dla każdej testowanej instancji problemu.
+
+## Zależność jakości rozwiązania końcowego od jakości rozwiązania początkowego (algorytmy przeszukiwania lokalnego)
+
+Przeprowadzono eksperyment porównujący jakość rozwiązania początkowego z jakością rozwiązania końcowego w algorytmach przeszukiwania lokalnego. Wyniki zilustrowano poniższymi wykresami.
+
+![](sprawozdanie_files/figure-html/init_result_relation-1.png)<!-- -->![](sprawozdanie_files/figure-html/init_result_relation-2.png)<!-- -->![](sprawozdanie_files/figure-html/init_result_relation-3.png)<!-- -->
+
+Z powyższych wykresów nie wynika wyraźna zależność między jakością rozwiązania początkowego, a końcowego. Pokazują one natomiast charakter badanych instancji problemu, w których określone rozwiązania występują częściej od innych (poziome "linie" na wykresach).
+
+## Multi-random local search: Zależność uzyskanego rozwiązania od liczby restartów
+
+Dla dwóch algorytmów przeszukiwania lokalnego (*Greedy* i *Steepest*) przeprowadzono eksperyment sprawdzający zależność jakości uzyskanego rozwiązania od ilości restartów (ponownych przeszukiwań lokalnych zaczynających od losowo wybranych punktów początkowych). Wyniki przedstawiono na poniższych wykresach.
+
+![](sprawozdanie_files/figure-html/multi_random-1.png)<!-- -->![](sprawozdanie_files/figure-html/multi_random-2.png)<!-- -->
+
+Zamieszczone wykresy pokazują, że algorytmy stosunkowo szybko (już po 2 - 3 iteracjach) osiągają rozwiązanie bliskie końcowemu (gdzie za końcowe  uznajemy takie, które nie zmienia się przez kilkadziesiąt iteracji). Dalsze iteracje pomagają natomiast w coraz wolniejszym tempie poprawiać uzyskane rozwiązanie.

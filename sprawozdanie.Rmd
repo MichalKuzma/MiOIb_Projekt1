@@ -131,7 +131,7 @@ ggplot(data_results, aes(x = inst_size, y = steps_count)) +
   theme_bw()
 ```
 
-Powy¿sze wykresy pokazuj¹, ¿e w pe³nej iteracji obie wersje oceniaj¹ zbli¿on¹ liczbê rozwi¹zañ, jednak zazwyczaj *Steepest* ocenia ich wiêcej. Eksperyment pokaza³ równie¿, ¿e algorytm *Steepest*, który dok³adnie wybiera zawsze najlepsze kolejne rozwi¹zanie wykonuje w pe³nej iteracji wiêcej kroków (dla ka¿dej badanej instancji problemu).
+Powy¿sze wykresy pokazuj¹, ¿e w pe³nej iteracji obie wersje oceniaj¹ zbli¿on¹ liczbê rozwi¹zañ, jednak zazwyczaj *Steepest* ocenia ich wiêcej. Eksperyment pokaza³ równie¿, ¿e algorytm *Steepest*, który dok³adnie wybiera zawsze najlepsze kolejne rozwi¹zanie wykonuje w pe³nej iteracji zauwa¿alnie mniej kroków (dla ka¿dej badanej instancji problemu).
 
 ### Heurystyka
 
@@ -223,3 +223,54 @@ ggplot(data_times, aes(x = inst_size, y = min)) +
   ylab("Czas dzia³ania algorytmu") +
   theme_bw()
 ```
+
+Przedstawione powy¿ej wykresy czasu trwania iteracji algorytmów pokazuj¹ wzrost czasu trwania algorytmu wraz ze wzrostem wielkoœci instancji (czego mo¿na siê by³o spodziewaæ). Wykresy œredniego czasu dzia³ania pokazuj¹ rosn¹c¹ niestabilnoœæ mierzonego czasu. Œredni czas wykonywania algorytmu lokalnego przeszukiwania jest podobny w obu wersjach (*Greedy* i *Steepest*) dla ka¿dej testowanej instancji problemu.
+
+## Zale¿noœæ jakoœci rozwi¹zania koñcowego od jakoœci rozwi¹zania pocz¹tkowego (algorytmy przeszukiwania lokalnego)
+
+Przeprowadzono eksperyment porównuj¹cy jakoœæ rozwi¹zania pocz¹tkowego z jakoœci¹ rozwi¹zania koñcowego w algorytmach przeszukiwania lokalnego. Wyniki zilustrowano poni¿szymi wykresami.
+
+```{r init_result_relation}
+data_init_result = read.csv2("gs_init_result.csv", col.names = c("name", "inst_name", "result", "init_result"), dec = ".")
+
+for (i_name in unique(data_init_result$inst_name)) {
+  instance_data <- data_init_result %>%
+    filter(inst_name == i_name)
+  
+  print(ggplot(instance_data, aes(x = init_result, y = result)) +
+    geom_point() +
+    facet_grid(name ~ .) +
+    ggtitle(i_name) +
+    xlab("Jakoœæ rozwi¹zania pocz¹tkowego") +
+    ylab("Jakoœæ rozwi¹zania koñcowego") +
+    theme_bw()
+  )
+}
+  
+```
+
+Z powy¿szych wykresów nie wynika wyraŸna zale¿noœæ miêdzy jakoœci¹ rozwi¹zania pocz¹tkowego, a koñcowego. Pokazuj¹ one natomiast charakter badanych instancji problemu, w których okreœlone rozwi¹zania wystêpuj¹ czêœciej od innych (poziome "linie" na wykresach).
+
+## Multi-random local search: Zale¿noœæ uzyskanego rozwi¹zania od liczby restartów
+
+Dla dwóch algorytmów przeszukiwania lokalnego (*Greedy* i *Steepest*) przeprowadzono eksperyment sprawdzaj¹cy zale¿noœæ jakoœci uzyskanego rozwi¹zania od iloœci restartów (ponownych przeszukiwañ lokalnych zaczynaj¹cych od losowo wybranych punktów pocz¹tkowych). Wyniki przedstawiono na poni¿szych wykresach.
+
+```{r multi_random}
+data_multi_random = read.csv2("multi_random.csv", col.names = c("name", "inst_name", "result", "iter_count"), dec = ".")
+
+for (i_name in unique(data_multi_random$inst_name)) {
+  instance_data <- data_multi_random %>%
+    filter(inst_name == i_name)
+  
+  print(ggplot(instance_data, aes(x = iter_count, y = result)) +
+    geom_line() +
+    facet_grid(name ~ .) +
+    ggtitle(i_name) +
+    xlab("Liczba iteracji") +
+    ylab("Jakoœæ zwróconego rozwi¹zania") +
+    theme_bw()
+  )
+}
+```
+
+Zamieszczone wykresy pokazuj¹, ¿e algorytmy stosunkowo szybko (ju¿ po 2 - 3 iteracjach) osi¹gaj¹ rozwi¹zanie bliskie koñcowemu (gdzie za koñcowe  uznajemy takie, które nie zmienia siê przez kilkadziesi¹t iteracji). Dalsze iteracje pomagaj¹ natomiast w coraz wolniejszym tempie poprawiaæ uzyskane rozwi¹zanie.
