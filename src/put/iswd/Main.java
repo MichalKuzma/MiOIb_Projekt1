@@ -13,9 +13,7 @@ public class Main {
         "bur26e", // size = 26
         "bur26g", // size  26
         "bur26h", // size = 26
-        "nug30", // size = 30
-        "tai100b", // size = 100
-        "tai256c" // size = 256, funny
+        "nug30" // size = 30
     };
 
     private static final String[] initResultInstances = new String[] {
@@ -47,9 +45,9 @@ public class Main {
         }
         
         AlgorithmTester tester = new AlgorithmTester();
-//        tester.compareResultsTimes(resultTimeInstances, new FileWriter("qap_algorithms.csv"),
-//                minTime, minIterationNumber);
-//        tester.compareGSInitResult(initResultInstances, new FileWriter("gs_init_result.csv"), 200);
+        tester.compareResultsTimes(resultTimeInstances, new FileWriter("qap_algorithms.csv"),
+                minTime, minIterationNumber);
+        tester.compareGSInitResult(initResultInstances, new FileWriter("gs_init_result.csv"), 200);
         tester.multiRandom(multiRandomInstances, new FileWriter("multi_random.csv"), 350);
     }
 }

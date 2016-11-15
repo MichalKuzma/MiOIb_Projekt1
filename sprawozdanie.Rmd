@@ -103,7 +103,7 @@ Przeprowadzono eksperyment zliczaj¹cy, ilu s¹siadów oceniaj¹ obie wersje algoryt
 
 ```{r gs_compare}
 data_results <- data %>%
-  filter(name == "Greedy" | name == "Steepest", inst_size < 100) %>%
+  filter(name == "Greedy" | name == "Steepest") %>%
   summarySE(measurevar = "rev_neigh", groupvars = c("name", "inst_size"))
 
 ggplot(data_results, aes(x = inst_size, y = rev_neigh)) +
@@ -117,7 +117,7 @@ ggplot(data_results, aes(x = inst_size, y = rev_neigh)) +
   theme_bw()
 
 data_results <- data %>%
-  filter(name == "Greedy" | name == "Steepest", inst_size < 100) %>%
+  filter(name == "Greedy" | name == "Steepest") %>%
   summarySE(measurevar = "steps_count", groupvars = c("name", "inst_size"))
 
 ggplot(data_results, aes(x = inst_size, y = steps_count)) +
@@ -169,7 +169,7 @@ ggplot(data_results, aes(x = inst_size, y = result_dist)) +
   geom_line() +
   geom_point() +
   facet_wrap(~ name, ncol = 2) +
-  ggtitle("Œrednia odleg³oœæ uzyskanego przez algorytm rozwi¹zania od optimum globalnego") +
+  ggtitle("Œrednia odleg³oœæ uzyskanego przez algorytm rozwi¹zania od optimum") +
   xlab("Rozmiar instancji problemu") +
   ylab("Odleg³oœæ od optimum") +
   theme_bw()
@@ -183,7 +183,7 @@ ggplot(data_results, aes(x = inst_size, y = min)) +
   geom_line() +
   geom_point() +
   facet_wrap(~ name, ncol = 2) +
-  ggtitle("Minimalna odleg³oœæ uzyskanego przez algorytm rozwi¹zania od optimum globalnego") +
+  ggtitle("Minimalna odleg³oœæ uzyskanego przez algorytm rozwi¹zania od optimum") +
   xlab("Rozmiar instancji problemu") +
   ylab("Odleg³oœæ od optimum") +
   theme_bw()
@@ -199,7 +199,6 @@ Warty podkreœlenia jest jeszcze wyraŸnie banalny charakter instancji problemu o 
 
 ```{r times_compare}
 data_times <- data %>%
-  filter(inst_size < 100) %>%
   summarySE(measurevar = "time", groupvars = c("name", "inst_size"))
 
 ggplot(data_times, aes(x = inst_size, y = time)) +
