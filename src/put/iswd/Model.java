@@ -30,7 +30,7 @@ public class Model {
         for (int i = 0; i < n; i++) {
             helper[i] = false;
         }
-        
+
         Random random = new Random();
         
         for (int i = n; i > 0; i--) {

@@ -3,6 +3,9 @@ package put.iswd;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -10,19 +13,35 @@ import java.util.Scanner;
  */
 public class AlgorithmTester {
     public void compareResultsTimes(String[] instances, FileWriter resultFile, long minTime, long minIterationNumber) throws IOException {
+        Parser parser = new Parser();
         for (String instance : instances) {
-            Parser parser = new Parser();
+            System.out.println("Testing data file: " + instance);
+
             ProblemCase problemCase = parser.parseFile(instance + ".dat");
 
             //        Optimal solution
+            File solFile = new File(instance.concat(".sln"));
+            if(!solFile.exists() || solFile.isDirectory()) {
+                continue;
+            }
             Scanner scanner = new Scanner(new File(instance.concat(".sln")));
-            int n = scanner.nextInt();
-            String optimalResult = Integer.toString(scanner.nextInt());
-            String optimalSolution = "";
-            for (int i = 0; i < n; i++) {
-                optimalSolution = optimalSolution.concat(Integer.toString(scanner.nextInt()));
-                if (i < n - 1)
-                    optimalSolution = optimalSolution.concat(" ");
+            String optimalResult;
+            String optimalSolution;
+            try {
+                int n = scanner.nextInt();
+
+                if (n >= 100)
+                    continue;
+
+                optimalResult = Integer.toString(scanner.nextInt());
+                optimalSolution = "";
+                for (int i = 0; i < n; i++) {
+                    optimalSolution = optimalSolution.concat(Integer.toString(scanner.nextInt()));
+                    if (i < n - 1)
+                        optimalSolution = optimalSolution.concat(" ");
+                }
+            } catch (InputMismatchException e) {
+                continue;
             }
 
             //        Algorithms
@@ -201,8 +220,8 @@ public class AlgorithmTester {
     }
 
     public void compareGSInitResult(String[] instances, FileWriter resultFile, int iterationsNum) throws IOException {
+        Parser parser = new Parser();
         for (String instance : instances) {
-            Parser parser = new Parser();
             ProblemCase problemCase = parser.parseFile(instance + ".dat");
 
             long counter;
@@ -232,8 +251,8 @@ public class AlgorithmTester {
     }
 
     public void multiRandom(String[] instances, FileWriter resultFile, int maxIterationsNum) throws IOException {
+        Parser parser = new Parser();
         for (String instance : instances) {
-            Parser parser = new Parser();
             ProblemCase problemCase = parser.parseFile(instance + ".dat");
 
             Model model, bestModel = null;
@@ -264,6 +283,46 @@ public class AlgorithmTester {
             } while ((counter < maxIterationsNum));
         }
         resultFile.close();
+    }
+
+    public void resultSimilarity(String[] instances, FileWriter resultFile, int numIterations) {
+        Parser parser = new Parser();
+        for (String instance : instances) {
+            ProblemCase problemCase = parser.parseFile(instance.concat(".dat"));
+
+            Model model;
+
+            long counter;
+
+            List<int[]> results = new ArrayList<>();
+            List<Integer> scores = new ArrayList<>();
+
+            counter = 0;
+            do {
+                model = new Model(problemCase);
+                model.steepestLocalSearch();
+                counter++;
+                results.add(model.getSolution());
+                scores.add(model.getValueOfModel());
+            } while ((counter < numIterations));
+
+            for (int i = 0; i < numIterations; i++) {
+                for (int j = 0; j < numIterations; j++) {
+
+                }
+            }
+
+        }
+    }
+
+    private int solutionSimilarity(int[] sol1, int[] sol2) {
+        assert sol1.length == sol2.length;
+        int score = 0;
+        for (int i = 0; i < sol1.length; i++) {
+            if (sol1[i] == sol2[i])
+                score += 1;
+        }
+        return score;
     }
 
     private static String getResultTimeLine(String algorithmName, Model model,
