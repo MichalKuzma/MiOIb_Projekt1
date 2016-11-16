@@ -255,37 +255,46 @@ public class AlgorithmTester {
         for (String instance : instances) {
             ProblemCase problemCase = parser.parseFile(instance + ".dat");
 
-            Model model, bestModel = null;
+            Model model;
 
             long counter;
+            double avgScore = 0.0;
+            double bestScore = -1.0;
 
             counter = 0;
             do {
                 model = new Model(problemCase);
                 model.greedyLocalSearch();
-                if (bestModel == null || model.getValueOfModel() < bestModel.getValueOfModel())
-                    bestModel = model;
+                int score = model.getValueOfModel();
+                avgScore += (double) score;
+                if (bestScore == -1.0 || score < bestScore)
+                    bestScore = score;
 
-                resultFile.write(getMultiRandomLine("Greedy", bestModel, instance, counter));
                 counter++;
+                resultFile.write(getMultiRandomLine("Greedy", bestScore, "Best", instance, counter));
+                resultFile.write(getMultiRandomLine("Greedy", avgScore / (double) counter, "Average", instance, counter));
             } while ((counter < maxIterationsNum));
 
-            bestModel = null;
+            bestScore = -1.0;
             //        STEEPEST
             counter = 0;
+            avgScore = 0.0;
             do {
                 model = new Model(problemCase);
                 model.steepestLocalSearch();
-                if (bestModel == null || model.getValueOfModel() < bestModel.getValueOfModel())
-                    bestModel = model;
-                resultFile.write(getMultiRandomLine("Steepest", bestModel, instance, counter));
+                int score = model.getValueOfModel();
+                avgScore += (double) score;
+                if (bestScore == -1.0 || score < bestScore)
+                    bestScore = score;
                 counter++;
+                resultFile.write(getMultiRandomLine("Steepest", bestScore, "Best", instance, counter));
+                resultFile.write(getMultiRandomLine("Steepest", avgScore / (double) counter, "Average", instance, counter));
             } while ((counter < maxIterationsNum));
         }
         resultFile.close();
     }
 
-    public void resultSimilarity(String[] instances, FileWriter resultFile, int numIterations) {
+    public void resultSimilarity(String[] instances, FileWriter resultFile, int numIterations) throws IOException {
         Parser parser = new Parser();
         for (String instance : instances) {
             ProblemCase problemCase = parser.parseFile(instance.concat(".dat"));
@@ -307,15 +316,16 @@ public class AlgorithmTester {
             } while ((counter < numIterations));
 
             for (int i = 0; i < numIterations; i++) {
-                for (int j = 0; j < numIterations; j++) {
-
+                for (int j = i + 1; j < numIterations; j++) {
+                    resultFile.write(getResultSimilarityLine(results.get(i), results.get(j),
+                            scores.get(i), scores.get(j), instance));
                 }
             }
-
         }
+        resultFile.close();
     }
 
-    private int solutionSimilarity(int[] sol1, int[] sol2) {
+    private static int solutionSimilarity(int[] sol1, int[] sol2) {
         assert sol1.length == sol2.length;
         int score = 0;
         for (int i = 0; i < sol1.length; i++) {
@@ -398,7 +408,7 @@ public class AlgorithmTester {
         return builder.toString();
     }
 
-    private static String getMultiRandomLine(String algorithmName, Model model, String instanceName, long counter) {
+    private static String getMultiRandomLine(String algorithmName, double result, String resultType, String instanceName, long counter) {
         StringBuilder builder = new StringBuilder();
 
         //algorithm name
@@ -409,12 +419,46 @@ public class AlgorithmTester {
         builder.append(instanceName);
         builder.append(";");
 
-        //achieved result
-        builder.append(model.getValueOfModel());
+        //result
+        builder.append(result);
+        builder.append(";");
+
+        //result type
+        builder.append(resultType);
         builder.append(";");
 
         //iteration number
         builder.append(counter);
+        builder.append("\n");
+
+        return builder.toString();
+    }
+
+    private static String getResultSimilarityLine(int[] sol1, int[] sol2, int score1, int score2, String instanceName) {
+        StringBuilder builder = new StringBuilder();
+
+        //permutation 1
+        builder.append(Model.perm2String(sol1));
+        builder.append(";");
+
+        //permutation 2
+        builder.append(Model.perm2String(sol2));
+        builder.append(";");
+
+        //similarity
+        builder.append(solutionSimilarity(sol1, sol2));
+        builder.append(";");
+
+        //score 1
+        builder.append(score1);
+        builder.append(";");
+
+        //score 2
+        builder.append(score2);
+        builder.append(";");
+
+        //instance name
+        builder.append(instanceName);
         builder.append("\n");
 
         return builder.toString();

@@ -72,26 +72,27 @@ Dla każdej badanej instancji wykonano 10 pomiarów. Porównano wyniki średnie,
 
 ![](sprawozdanie_files/figure-html/results_compare-1.png)<!-- -->
 
-Zaobserwować można wysoką niestabilność uzyskanych wyników dla niektórych instancji problemu (duże odchylenia standardowe dla każdego algorytmu). Może to być spowodowane skomplikowaną powierzchnią rozwiązań.
-
-
 ![](sprawozdanie_files/figure-html/best_results_compare-1.png)<!-- -->
 
-Po rozpatrzeniu najlepszego zamiast średniego rozwiązania, charakter malejący jest już słabiej zauważalny. Najmniejsze odległości występują dla instancji najmniejszych i największych, podczas gdy instancje o pośredniej wielkości mają największą względną odległość od optimum.
+Zaobserwować można wysoką niestabilność uzyskanych wyników dla niektórych instancji problemu (duże odchylenia standardowe dla każdego algorytmu). Może to być spowodowane skomplikowaną przestrzenią rozwiązań. 
+
+Metodą regresji liniowej, wyznaczono zależności między wielkością instancji, a względną odległością rozwiązania od optimum. Poza algorytmem losowym żaden nie wykazuje wyraźnej zależności pomiędzy wielkością instancji, a odległością znalezionego rozwiązania od optimum. Random wraz ze wzrostem wielkości instancji zwraca rozwiązania coraz bliższe optymalnemu. Jest to związane ze znacznie dłużczym czasem wykonywania algorytmu (takim, jak dla przeszukiwania lokalnego na danej instancji).
 
 Algorytmy *Greedy* i *Steepest* osiągają bardzo podobne średnie rozwiązania. Zaproponowana heurystyka zwraca nieznacznie gorsze rozwiązania od algorytmów przeszukiwania lokalnego, natomiast *Random* osiąga rozwiązania daleko gorsze od pozostałych (poza prostymi instancjami).
 
-Metodą regresji liniowej, wyznaczono zależności między wielkością instancji, a względną odległością rozwiązania od optimum. Algorytm *Random* zdaje się wykazywać delikatną zależność malejącą (im większa instancja, tym mniejsza względna odległość od optimum). Pozostałe algorytmy nie wykazują żadnej relacji między tymi wielkościami.
-
 ## Porównanie czasów wykonywania algorytmów
 
-Ponieważ warunkiem stopu algorytmu *Random* jest upłynięcie określonego czasu (ściśle - średniego czasu wykonywania *Local Search*), jego wykresy zostały pominięte.
+Ponieważ warunkiem stopu algorytmu *Random* jest upłynięcie określonego czasu (średniego czasu wykonywania *Local Search*), jego wykresy zostały pominięte.
 
 ![](sprawozdanie_files/figure-html/times_compare-1.png)<!-- -->
 
 ![](sprawozdanie_files/figure-html/best_times_compare-1.png)<!-- -->
 
-Przedstawione powyżej wykresy czasu trwania iteracji algorytmów pokazują wzrost czasu trwania algorytmu wraz ze wzrostem wielkości instancji (czego można się było spodziewać). Wykresy średniego czasu działania pokazują rosnącą niestabilność mierzonego czasu (która nie jest jednak zależna jedynie od wielkości instancji). Średni czas wykonywania algorytmu lokalnego przeszukiwania w obu wersjach (*Greedy* i *Steepest*) jest podobny dla każdej testowanej instancji problemu. Niektóre instancje rozwiązywane są szybciej przy użyciu jednego z nich, inne - drugiego. 
+Przedstawione powyżej wykresy czasu trwania iteracji algorytmów pokazują wzrost czasu trwania algorytmu wraz ze wzrostem wielkości instancji (czego można się było spodziewać). 
+
+Wykresy średniego czasu działania pokazują rosnącą niestabilność mierzonego czasu (która nie jest jednak zależna jedynie od wielkości instancji). Najmniejsze odchylenia zanotowano dla algorytmu *Steepest LS*, co było do przewidzenia. W każdym kroku oceni on taką samą liczbę sąsiadów (co zajmie tyle samo czasu), więc czas trwania algorytmu zależy wyłącznie od liczby wykonanych kroków. Ponieważ dla danej instancji wykonuje on zawsze mniej więcej tyle samo kroków (potwierdzają to niewielkie odchylenia standardowe na wykresie rozmiar instancji / liczba kroków), liczba odwiedzonych sąsiadów, a więc i czas trwania algorytmu cechują się wysoką stabilnością.
+
+Trudno jednoznacznie określić, który z algorytmów przeszukiwania lokalnego działa szybciej. Dla niektórych instancji krótszy czas osiągnął *Steepest*, dla innych *Greedy*. Jest to silnie związane z kształtem przestrzeni rozwiązań, a nie bezpośrednio z wielkością instancji.
 
 ## Zależność jakości rozwiązania końcowego od jakości rozwiązania początkowego (algorytmy przeszukiwania lokalnego)
 
@@ -113,30 +114,42 @@ Zamieszczone wykresy pokazują, że algorytmy stosunkowo szybko (już po 2 - 3 i
 
 ## Ocena podobieństwa znajdywanych rozwiązań lokalnie optymalnych
 
-Poniżej znajdują się listy znalezionych rozwiązań dla dwóch instancji
+Określono podobieństwo między rozwiązaniami znalezionymi przez algorytmy przeszukiwania lokalnego. Podobieństwo zostało zdefiniowane, jako liczba pozycji, na których rozwiązania mają równe wartości. Przykładowo:
 
 
-### data/qapdata/had12
+Permutacja 1                      Permutacja 2                       Podobieństwo
+--------------------------------  --------------------------------  -------------
+2 9 10 1 11 5 4 0 7 6 3 8         7 9 1 10 11 6 4 0 2 5 3 8                     6
+2 9 10 1 11 5 4 0 7 6 3 8         2 9 10 1 11 4 5 6 7 0 3 8                     8
+3 2 13 12 1 5 6 4 7 0 9 11 10 8   3 13 12 1 0 5 2 4 7 8 9 11 6 10               6
+3 13 2 5 9 1 12 4 8 11 0 6 7 10   5 13 3 2 9 4 12 6 8 11 0 1 7 10               8
+10 8 7 11 9 1 12 2 6 5 0 13 3 4   10 8 11 2 9 7 12 4 13 5 0 1 6 3               6
 
-- 2 1 11 5 10 4 6 7 9 0 3 8
-- 2 1 5 9 10 6 11 4 7 0 3 8
-- 8 3 0 6 10 5 11 4 7 1 9 2
-- 3 0 4 8 6 5 10 11 7 1 9 2
-- 8 3 0 6 5 10 4 1 7 11 9 2
-- 8 3 6 0 5 10 4 1 7 11 9 2
-- 2 9 10 1 11 5 4 0 7 6 3 8
-- 3 0 4 8 10 6 11 9 7 5 1 2
-- 2 1 6 9 11 5 4 0 7 10 3 8
+Sporządzono wykresy próbując zbadać zależność między podobieństwem, a różnicą w jakości dla par rozwiązań. Badanie przeprowadzono na dwóch niewielkich instancjach.
 
-### data/qapdata/nug14
+![](sprawozdanie_files/figure-html/results_similarity_graphs-1.png)<!-- -->![](sprawozdanie_files/figure-html/results_similarity_graphs-2.png)<!-- -->
 
-- 2 3 13 1 0 9 6 7 12 5 11 4 10 8
-- 1 12 10 8 11 5 13 7 4 9 0 3 6 2
-- 0 4 3 1 5 8 7 2 12 9 10 11 6 13
-- 6 0 1 3 9 7 4 12 13 5 10 8 11 2
-- 3 2 6 11 9 1 13 4 7 5 0 12 8 10
-- 0 12 8 11 9 1 13 10 4 5 3 2 7 6
-- 8 0 1 12 3 10 7 6 13 2 11 4 9 5
-- 0 1 12 10 8 5 13 6 7 4 9 3 2 11
-- 9 5 6 10 11 2 4 12 7 8 3 13 1 0
-- 0 13 4 5 9 1 12 8 10 11 3 2 7 6
+Wykres dla pierwszej z badanych instancji przedstawia relację malejącą (im bardziej podobne rozwiązania, tym mniejsza różnica w ich jakości), podczas, gdy drugi nie przejawia wyraźnej relacji omawianych wielkości. Rozwiązania znalezione dla drugiej instancji są również mniej podobne do siebie wzajemnie - dla instancji problemu *had12* pary rozwiązań mają podobieństwo sięgające nawet 10 (na maksimum 12), natomiast dla *nug14* najwyższe podobieństwo wyniosło 6/14.
+
+## Wnioski
+
+W ramach zadania zaimplementowano i przetestowano 4 algorytmy rozwiązujące problem QAP: *Random Search*, *Greedy Local Search*, *Steepest Local Search* oraz autorski algorytm heurystyczny. Do przeszukiwania przestrzeni rozwiązań skorzystano z sąsiedztwa 2-OPT, które dla każdego rozwiązania zwraca n<sup>2</sup> jego sąsiadów. 
+
+W pierwszej kolejności porównano liczbę wykonanych kroków oraz sprawdzonych sąsiadów przez algorytmy *Greedy LS* i *Steepest LS*. Okazało się, że jakkolwiek *Steepest* wykonuje znacznie mniej kroków dla każdej badanej instancji, liczba sprawdzonych przez niego sąsiadów w pełnej iteracji jest zazwyczaj wyższa od "konkurenta".
+
+Względna odległość znalezionego rozwiązania od optimum globalnego jest niezależna od wielkości instancji, a dla algorytmu *Random Search* jest ona nawet tym mniejsza, im większa jest instancja problemu. Jest to jednak w dużej mierze znacznym wydłużeniem czasu działania RS dla większych instancji.
+
+Czas wykonywania algorytmów rośnie wraz ze wzrostem wielkości instancji. Jest to spodziewany wniosek, jednak należy zauważyć, że od tej reguły są wyjątki i długość permutacji nie jest jedynym kryterium determinującym czas wykonywania algorytmu. Najbardziej stabilny czas wykonywania wykazuje *Steepest Local Search*, co jest zrozumiałe biorąc pod uwagę, że w każdym kroku przeszukuje całe dostępne sąsiedztwo (które ma równą liczność w każdym punkcie przestrzeni rozwiązań).
+
+Porównanie czasu wykonywania algorytmów *Greedy* i *Steepest* prowadzi do wniosku, że żaden z nich nie jest jednoznacznie lepszy od drugiego. Zawsze znajdzie się instancja, dla której *Greedy* zakończy się szybciej oraz taka, dla której to *Steepest* osiągnie lepszy czas.
+
+Nie można wskazać wyrażnej zależności między jakością rozwiązania początkowego, a końcowego w algorytmach przeszukiwania lokalnego. Jedyną pewną zależnością jest, że zwrócone rozwiązanie będzie się charakteryzowało jakością nie gorszą od początkowego.
+
+*Multi-random Local Search* (wielokrotne uruchamianie przeszukiwania lokalnego w losowych punktach) stanowi bardzo sprawne ulepszenie algorytmów LS. Z przeprowadzonych eksperymentów wynika, że dobre rozwiązanie osiągane jest stosunkowo szybko. Wielokrotne uruchamianie *LS* pozwala na znalezienie większej liczby optimów lokalnych, a w konsekwencji zwiększa szansę znalezienia rozwiązania optymalnego globalnie.
+
+Na koniec oceniono podobieństwo znajdowanych przez *LS* rozwiązań oraz podjęto próbę znalezienia relacji między podobieństwem rozwiązań, a różnicą ich jakości. Wykorzystano miarę równą liczbie pozycji, na których permutacje mają równe wartości. Zauważono, że dla niektórych instancji może występować wyraźna zależność między podobieństwem rozwiązań, a różnicą ich jakości.
+
+## Napotkane trudności
+
+Przy wykonywaniu zadania nie natrafiono na żadne istotne trudności.
+

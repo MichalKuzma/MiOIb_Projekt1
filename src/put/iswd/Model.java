@@ -157,10 +157,14 @@ public class Model {
     
     @Override
     public String toString() {
+        return perm2String(solution);
+    }
+
+    public static String perm2String(int[] perm) {
         String ret = "";
-        for (int i = 0; i < n; i++) {
-            ret += Integer.toString(solution[i]);
-            if (i < n-1) {
+        for (int i = 0; i < perm.length; i++) {
+            ret += Integer.toString(perm[i]);
+            if (i < perm.length-1) {
                 ret += " ";
             }
         }

@@ -2,8 +2,9 @@
 title: "Algorytmy rozwi¹zuj¹ce problem QAP"
 author: "Micha³ KuŸma i Micha³ Biernacki"
 date: "11 listopada 2016"
-output: 
-  html_document: 
+output:
+  pdf_document: default
+  html_document:
     keep_md: yes
 ---
 
@@ -176,9 +177,6 @@ ggplot(data_results, aes(x = inst_size, y = result_dist)) +
   theme_bw()
 ```
 
-Zaobserwowaæ mo¿na wysok¹ niestabilnoœæ uzyskanych wyników dla niektórych instancji problemu (du¿e odchylenia standardowe dla ka¿dego algorytmu). Mo¿e to byæ spowodowane skomplikowan¹ powierzchni¹ rozwi¹zañ.
-
-
 ```{r best_results_compare}
 ggplot(data_results, aes(x = inst_size, y = min)) +
   geom_point() +
@@ -190,15 +188,15 @@ ggplot(data_results, aes(x = inst_size, y = min)) +
   theme_bw()
 ```
 
-Po rozpatrzeniu najlepszego zamiast œredniego rozwi¹zania, charakter malej¹cy jest ju¿ s³abiej zauwa¿alny. Najmniejsze odleg³oœci wystêpuj¹ dla instancji najmniejszych i najwiêkszych, podczas gdy instancje o poœredniej wielkoœci maj¹ najwiêksz¹ wzglêdn¹ odleg³oœæ od optimum.
+Zaobserwowaæ mo¿na wysok¹ niestabilnoœæ uzyskanych wyników dla niektórych instancji problemu (du¿e odchylenia standardowe dla ka¿dego algorytmu). Mo¿e to byæ spowodowane skomplikowan¹ przestrzeni¹ rozwi¹zañ. 
+
+Metod¹ regresji liniowej, wyznaczono zale¿noœci miêdzy wielkoœci¹ instancji, a wzglêdn¹ odleg³oœci¹ rozwi¹zania od optimum. Poza algorytmem losowym ¿aden nie wykazuje wyraŸnej zale¿noœci pomiêdzy wielkoœci¹ instancji, a odleg³oœci¹ znalezionego rozwi¹zania od optimum. Random wraz ze wzrostem wielkoœci instancji zwraca rozwi¹zania coraz bli¿sze optymalnemu. Jest to zwi¹zane ze znacznie d³u¿czym czasem wykonywania algorytmu (takim, jak dla przeszukiwania lokalnego na danej instancji).
 
 Algorytmy *Greedy* i *Steepest* osi¹gaj¹ bardzo podobne œrednie rozwi¹zania. Zaproponowana heurystyka zwraca nieznacznie gorsze rozwi¹zania od algorytmów przeszukiwania lokalnego, natomiast *Random* osi¹ga rozwi¹zania daleko gorsze od pozosta³ych (poza prostymi instancjami).
 
-Metod¹ regresji liniowej, wyznaczono zale¿noœci miêdzy wielkoœci¹ instancji, a wzglêdn¹ odleg³oœci¹ rozwi¹zania od optimum. Algorytm *Random* zdaje siê wykazywaæ delikatn¹ zale¿noœæ malej¹c¹ (im wiêksza instancja, tym mniejsza wzglêdna odleg³oœæ od optimum). Pozosta³e algorytmy nie wykazuj¹ ¿adnej relacji miêdzy tymi wielkoœciami.
-
 ## Porównanie czasów wykonywania algorytmów
 
-Poniewa¿ warunkiem stopu algorytmu *Random* jest up³yniêcie okreœlonego czasu (œciœle - œredniego czasu wykonywania *Local Search*), jego wykresy zosta³y pominiête.
+Poniewa¿ warunkiem stopu algorytmu *Random* jest up³yniêcie okreœlonego czasu (œredniego czasu wykonywania *Local Search*), jego wykresy zosta³y pominiête.
 
 ```{r times_compare}
 data_times <- data %>%
@@ -227,7 +225,11 @@ ggplot(data_times, aes(x = inst_size, y = min)) +
   theme_bw()
 ```
 
-Przedstawione powy¿ej wykresy czasu trwania iteracji algorytmów pokazuj¹ wzrost czasu trwania algorytmu wraz ze wzrostem wielkoœci instancji (czego mo¿na siê by³o spodziewaæ). Wykresy œredniego czasu dzia³ania pokazuj¹ rosn¹c¹ niestabilnoœæ mierzonego czasu (która nie jest jednak zale¿na jedynie od wielkoœci instancji). Œredni czas wykonywania algorytmu lokalnego przeszukiwania w obu wersjach (*Greedy* i *Steepest*) jest podobny dla ka¿dej testowanej instancji problemu. Niektóre instancje rozwi¹zywane s¹ szybciej przy u¿yciu jednego z nich, inne - drugiego. 
+Przedstawione powy¿ej wykresy czasu trwania iteracji algorytmów pokazuj¹ wzrost czasu trwania algorytmu wraz ze wzrostem wielkoœci instancji (czego mo¿na siê by³o spodziewaæ). 
+
+Wykresy œredniego czasu dzia³ania pokazuj¹ rosn¹c¹ niestabilnoœæ mierzonego czasu (która nie jest jednak zale¿na jedynie od wielkoœci instancji). Najmniejsze odchylenia zanotowano dla algorytmu *Steepest LS*, co by³o do przewidzenia. W ka¿dym kroku oceni on tak¹ sam¹ liczbê s¹siadów (co zajmie tyle samo czasu), wiêc czas trwania algorytmu zale¿y wy³¹cznie od liczby wykonanych kroków. Poniewa¿ dla danej instancji wykonuje on zawsze mniej wiêcej tyle samo kroków (potwierdzaj¹ to niewielkie odchylenia standardowe na wykresie rozmiar instancji / liczba kroków), liczba odwiedzonych s¹siadów, a wiêc i czas trwania algorytmu cechuj¹ siê wysok¹ stabilnoœci¹.
+
+Trudno jednoznacznie okreœliæ, który z algorytmów przeszukiwania lokalnego dzia³a szybciej. Dla niektórych instancji krótszy czas osi¹gn¹³ *Steepest*, dla innych *Greedy*. Jest to silnie zwi¹zane z kszta³tem przestrzeni rozwi¹zañ, a nie bezpoœrednio z wielkoœci¹ instancji.
 
 ## Zale¿noœæ jakoœci rozwi¹zania koñcowego od jakoœci rozwi¹zania pocz¹tkowego (algorytmy przeszukiwania lokalnego)
 
@@ -261,18 +263,16 @@ Brak zale¿noœci miêdzy jakoœci¹ pocz¹tkowego i koñcowego rozwi¹zania wynika ze z
 Dla dwóch algorytmów przeszukiwania lokalnego (*Greedy* i *Steepest*) przeprowadzono eksperyment sprawdzaj¹cy zale¿noœæ jakoœci uzyskanego rozwi¹zania od iloœci restartów (ponownych przeszukiwañ lokalnych zaczynaj¹cych od losowo wybranych punktów pocz¹tkowych). Wyniki przedstawiono na poni¿szych wykresach.
 
 ```{r multi_random}
-data_multi_random = read.csv2("multi_random.csv", col.names = c("name", "inst_name", "result", "iter_count"), dec = ".")
+data_multi_random = read.csv2("multi_random.csv", col.names = c("name", "inst_name", "result", "result_type", "iter_count"), dec = ".")
 
 for (i_name in unique(data_multi_random$inst_name)) {
   instance_data <- data_multi_random %>%
     filter(inst_name == i_name)
   
-  print(ggplot(instance_data, aes(x = iter_count, y = result)) +
+  print(ggplot(instance_data, aes(x = iter_count, y = result, colour = result_type)) +
     geom_line() +
     facet_grid(name ~ .) +
-    ggtitle(i_name) +
-    xlab("Liczba iteracji") +
-    ylab("Jakoœæ zwróconego rozwi¹zania") +
+    labs(title = i_name, x = "Liczba iteracji", y = "Jakoœæ zwróconego rozwi¹zania", color = "Rodzaj wyniku") +
     theme_bw()
   )
 }
@@ -282,27 +282,58 @@ Zamieszczone wykresy pokazuj¹, ¿e algorytmy stosunkowo szybko (ju¿ po 2 - 3 iter
 
 ## Ocena podobieñstwa znajdywanych rozwi¹zañ lokalnie optymalnych
 
-Poni¿ej znajduj¹ siê listy znalezionych rozwi¹zañ dla dwóch instancji
+Okreœlono podobieñstwo miêdzy rozwi¹zaniami znalezionymi przez algorytmy przeszukiwania lokalnego. Podobieñstwo zosta³o zdefiniowane, jako liczba pozycji, na których rozwi¹zania maj¹ równe wartoœci. Przyk³adowo:
 
-```{r result_compare, results="asis"}
-data_result_compare <- data %>%
-  filter(inst_name == "data/qapdata/had12" | inst_name == "data/qapdata/nug14",
-         name == "Steepest")
+```{r results_similarity}
+data_results_similarity <- read.csv2("results_similarity.csv", col.names = c("perm1", "perm2", "similarity", "score1", "score2", "inst_name"), dec = ".") %>%
+  mutate(score_dif = abs(score1 - score2))
 
-list_template <- "
-- %s"
-header_template <- "
+data_table <- data_results_similarity %>%
+  select(perm1, perm2, similarity) %>%
+  top_n(5)
 
-### %s
-"
+kable(data_table, col.names = c("Permutacja 1", "Permutacja 2", "Podobieñstwo"))
+```
 
-for (i_name in unique(data_result_compare$inst_name)) {
-  cat(sprintf(header_template, i_name))
-  
-  data_instance <- data_result_compare %>%
+Sporz¹dzono wykresy próbuj¹c zbadaæ zale¿noœæ miêdzy podobieñstwem, a ró¿nic¹ w jakoœci dla par rozwi¹zañ. Badanie przeprowadzono na dwóch niewielkich instancjach.
+
+```{r results_similarity_graphs}
+for (i_name in unique(data_results_similarity$inst_name)) {
+  instance_data <- data_results_similarity %>%
     filter(inst_name == i_name)
-  for (res in unique(data_instance$perm)) {
-    cat(sprintf(list_template, res))
-  }
+  
+  print(ggplot(instance_data, aes(x = similarity, y = score_dif)) +
+    geom_point() +
+    geom_smooth(method = "lm") +
+    ggtitle(i_name) +
+    xlab("Podobieñstwo rozwi¹zañ") +
+    ylab("Ró¿nica jakoœci rozwi¹zañ") +
+    theme_bw()
+  )
 }
 ```
+
+Wykres dla pierwszej z badanych instancji przedstawia relacjê malej¹c¹ (im bardziej podobne rozwi¹zania, tym mniejsza ró¿nica w ich jakoœci), podczas, gdy drugi nie przejawia wyraŸnej relacji omawianych wielkoœci. Rozwi¹zania znalezione dla drugiej instancji s¹ równie¿ mniej podobne do siebie wzajemnie - dla instancji problemu *had12* pary rozwi¹zañ maj¹ podobieñstwo siêgaj¹ce nawet 10 (na maksimum 12), natomiast dla *nug14* najwy¿sze podobieñstwo wynios³o 6/14.
+
+## Wnioski
+
+W ramach zadania zaimplementowano i przetestowano 4 algorytmy rozwi¹zuj¹ce problem QAP: *Random Search*, *Greedy Local Search*, *Steepest Local Search* oraz autorski algorytm heurystyczny. Do przeszukiwania przestrzeni rozwi¹zañ skorzystano z s¹siedztwa 2-OPT, które dla ka¿dego rozwi¹zania zwraca n<sup>2</sup> jego s¹siadów. 
+
+W pierwszej kolejnoœci porównano liczbê wykonanych kroków oraz sprawdzonych s¹siadów przez algorytmy *Greedy LS* i *Steepest LS*. Okaza³o siê, ¿e jakkolwiek *Steepest* wykonuje znacznie mniej kroków dla ka¿dej badanej instancji, liczba sprawdzonych przez niego s¹siadów w pe³nej iteracji jest zazwyczaj wy¿sza od "konkurenta".
+
+Wzglêdna odleg³oœæ znalezionego rozwi¹zania od optimum globalnego jest niezale¿na od wielkoœci instancji, a dla algorytmu *Random Search* jest ona nawet tym mniejsza, im wiêksza jest instancja problemu. Jest to jednak w du¿ej mierze znacznym wyd³u¿eniem czasu dzia³ania RS dla wiêkszych instancji.
+
+Czas wykonywania algorytmów roœnie wraz ze wzrostem wielkoœci instancji. Jest to spodziewany wniosek, jednak nale¿y zauwa¿yæ, ¿e od tej regu³y s¹ wyj¹tki i d³ugoœæ permutacji nie jest jedynym kryterium determinuj¹cym czas wykonywania algorytmu. Najbardziej stabilny czas wykonywania wykazuje *Steepest Local Search*, co jest zrozumia³e bior¹c pod uwagê, ¿e w ka¿dym kroku przeszukuje ca³e dostêpne s¹siedztwo (które ma równ¹ licznoœæ w ka¿dym punkcie przestrzeni rozwi¹zañ).
+
+Porównanie czasu wykonywania algorytmów *Greedy* i *Steepest* prowadzi do wniosku, ¿e ¿aden z nich nie jest jednoznacznie lepszy od drugiego. Zawsze znajdzie siê instancja, dla której *Greedy* zakoñczy siê szybciej oraz taka, dla której to *Steepest* osi¹gnie lepszy czas.
+
+Nie mo¿na wskazaæ wyra¿nej zale¿noœci miêdzy jakoœci¹ rozwi¹zania pocz¹tkowego, a koñcowego w algorytmach przeszukiwania lokalnego. Jedyn¹ pewn¹ zale¿noœci¹ jest, ¿e zwrócone rozwi¹zanie bêdzie siê charakteryzowa³o jakoœci¹ nie gorsz¹ od pocz¹tkowego.
+
+*Multi-random Local Search* (wielokrotne uruchamianie przeszukiwania lokalnego w losowych punktach) stanowi bardzo sprawne ulepszenie algorytmów LS. Z przeprowadzonych eksperymentów wynika, ¿e dobre rozwi¹zanie osi¹gane jest stosunkowo szybko. Wielokrotne uruchamianie *LS* pozwala na znalezienie wiêkszej liczby optimów lokalnych, a w konsekwencji zwiêksza szansê znalezienia rozwi¹zania optymalnego globalnie.
+
+Na koniec oceniono podobieñstwo znajdowanych przez *LS* rozwi¹zañ oraz podjêto próbê znalezienia relacji miêdzy podobieñstwem rozwi¹zañ, a ró¿nic¹ ich jakoœci. Wykorzystano miarê równ¹ liczbie pozycji, na których permutacje maj¹ równe wartoœci. Zauwa¿ono, ¿e dla niektórych instancji mo¿e wystêpowaæ wyraŸna zale¿noœæ miêdzy podobieñstwem rozwi¹zañ, a ró¿nic¹ ich jakoœci.
+
+## Napotkane trudnoœci
+
+Przy wykonywaniu zadania nie natrafiono na ¿adne istotne trudnoœci.
+

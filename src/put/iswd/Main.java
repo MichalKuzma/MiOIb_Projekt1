@@ -71,9 +71,10 @@ public class Main {
         }
         
         AlgorithmTester tester = new AlgorithmTester();
-        tester.compareResultsTimes(resultTimeInstances.toArray(new String[resultTimeInstances.size()]),
-                new FileWriter("qap_algorithms.csv"), minTime, minIterationNumber);
-        tester.compareGSInitResult(initResultInstances, new FileWriter("gs_init_result.csv"), 200);
-        tester.multiRandom(multiRandomInstances, new FileWriter("multi_random.csv"), 350);
+//        tester.compareResultsTimes(resultTimeInstances.toArray(new String[resultTimeInstances.size()]),
+//                new FileWriter("qap_algorithms.csv"), minTime, minIterationNumber);
+//        tester.compareGSInitResult(initResultInstances, new FileWriter("gs_init_result.csv"), 200);
+//        tester.multiRandom(multiRandomInstances, new FileWriter("multi_random.csv"), 350);
+        tester.resultSimilarity(resultSimilarityInstances, new FileWriter("results_similarity.csv"), 10);
     }
 }
