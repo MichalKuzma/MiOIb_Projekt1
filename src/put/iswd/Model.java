@@ -1,5 +1,6 @@
 package put.iswd;
 
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -132,6 +133,90 @@ public class Model {
                 end = true;
             }
         }
+    }
+    
+    public void simulatedAnnealing() {
+        randomSolution();
+        System.arraycopy(this.solution, 0, this.initialSolution, 0, this.n);
+        
+        int pom = getValueOfModel();
+        int noChangeCounter = 0;
+        
+        boolean end = false;
+
+        reviewedNeighbours = 0;
+        stepsCounter = 0;
+        
+        double temperature = (double)calculateStartTemperature();
+        while (!end) {
+            //Markow chain (L = n*n)
+            for (int k = 0 ; k < n*n; k++) {
+                stepsCounter += 1;
+
+                //rand neighbour
+                Random random = new Random();
+
+                int i1 = random.nextInt(n);
+                int i2 = random.nextInt(n-1);
+                if (i2 >= i1) {
+                    i2++;
+                }
+                if (i2 == n) {
+                    i2 = 0;
+                }
+
+                //make change
+                int changeValue = valueOfChanging2Items(i1, i2);
+                if ((double)changeValue < temperature) {
+                    change(i1, i2);                
+                    valueOfModel += changeValue;
+                    noChangeCounter = 0;
+                } else {
+                    noChangeCounter++;
+                }
+            }
+            
+            //stop conditions (P = 0, change of getting worse solution = 0% during last markow chain
+            if ((noChangeCounter > 10*n*n) || (temperature < 1.0)) {
+                end = true;
+            }
+            
+            //calculate new temperature (alpha = 0.95)
+            temperature = 0.95 * temperature;
+        }
+    }
+    
+    public int calculateStartTemperature() {
+        int temperature = 0;
+        int sampleSize = 1000;
+        
+        int[] values = new int[sampleSize];
+        for (int i = 0; i < sampleSize; i++) {
+            randomSolution();
+            modelEvaluated = false;
+            getValueOfModel();
+            
+            Random random = new Random();
+        
+            int i1 = random.nextInt(n);
+            int i2 = random.nextInt(n-1);
+            if (i2 >= i1) {
+                i2++;
+            }
+            if (i2 == n) {
+                i2 = 0;
+            }
+            
+            values[i] = valueOfChanging2Items(i1, i2);
+        }
+        
+        Arrays.sort(values);
+        
+        temperature = values[sampleSize * 95 / 100];
+        
+        if (temperature < 0) temperature = 0;
+        
+        return temperature;
     }
     
     public void randomChange() {
