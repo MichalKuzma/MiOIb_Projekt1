@@ -219,6 +219,170 @@ public class Model {
         return temperature;
     }
     
+    public void tabuSearch() {
+        int[][] tabuList = new int[(int)Math.ceil((double)this.n/4.0)][2];
+        for (int i = 0; i < (int)Math.ceil((double)this.n/4.0); i++) {
+            tabuList[i][0] = -1;
+            tabuList[i][1] = -1;
+        }
+        int[][] bestNeighbours = new int[(int)Math.ceil((double)this.n/10.0)][3];
+        for (int i = 0; i < (int)Math.ceil((double)this.n/10.0); i++) {
+            bestNeighbours[i][0] = -1;
+            bestNeighbours[i][1] = -1;
+            bestNeighbours[i][2] = -1;
+        }
+        
+        randomSolution();
+        System.arraycopy(this.solution, 0, this.initialSolution, 0, this.n);
+        
+        double temperature = (double)calculateStartTemperature();
+        
+        int pom = getValueOfModel();
+        int best = 0;
+        int bestI = 0;
+        int bestJ = 0;
+        
+        boolean end = false;
+
+        reviewedNeighbours = 0;
+        stepsCounter = 0;
+        while (!end) {
+            stepsCounter += 1;
+            
+            //sprawdzenie wszystkich sąsiadów i wybór k=SIZEOFINSTANCE/10 najlepszych uwzględniając aspirację
+            for (int i = 0; i < n-1; i++) {
+                for (int j = i+1; j < n; j++) {
+                    reviewedNeighbours += 1;
+                    int changeValue = valueOfChanging2Items(i, j);
+                    
+                    //aspiracja - jeżeli jest na tabu i pogorszy - wyrzucamy
+                    if (changeValue >= 0 && isInTabu(tabuList, solution[i], solution[j])) {
+                        continue;
+                    }
+                    
+                    int worst = 0;
+                    boolean wasBreak = false;
+                    for (int k = 0; k < (int)Math.ceil((double)this.n/10.0); k++) {
+                        if (bestNeighbours[k][0] == -1) {
+                            bestNeighbours[k][0] = i;
+                            bestNeighbours[k][1] = j;
+                            bestNeighbours[k][2] = changeValue;
+                            wasBreak = true;
+                            break;
+                        } else {
+                            if (bestNeighbours[worst][2] < bestNeighbours[k][2]) {
+                                worst = k;
+                            }
+                        }
+                    }
+                    
+                    if (wasBreak) {
+                        continue;
+                    }
+                    
+                    if (bestNeighbours[worst][2] > changeValue) {
+                        bestNeighbours[worst][0] = i;
+                        bestNeighbours[worst][1] = j;
+                        bestNeighbours[worst][2] = changeValue;
+                    }
+                }
+            }
+            
+            boolean wasChange = false;
+            
+            //robienie ruchów, aż nie wykorzystamy listy
+            for (int k = 0; k < (int)Math.ceil((double)this.n/10.0); k++) {
+                //jeżeli tablica pusta, to przerywamy
+                boolean tabEmpty = true; 
+                for (int i = 0; i < (int)Math.ceil((double)this.n/10.0); i++) {
+                    if (bestNeighbours[i][0] != -1) {
+                        tabEmpty = false;
+                        break;
+                    }
+                }
+                if (tabEmpty) {
+                    break;
+                }
+                //koniec pustej tablicy
+                
+                //wybór najlepszego z listy
+                int bestChange = 0;
+                for (int i = 0; i < (int)Math.ceil((double)this.n/10.0); i++) {
+                    if ((bestNeighbours[bestChange][0] == -1) && (bestNeighbours[i][0] != -1)) {
+                        bestChange = i;
+                    } else if ((bestNeighbours[i][0] != -1) && (bestNeighbours[bestChange][2] > bestNeighbours[i][2])) {
+                        bestChange = i;
+                    }
+                }
+                //koniec wyboru najlepszego
+                
+                //aspiracja
+                if (bestNeighbours[bestChange][2] > 0 && 
+                        isInTabu(tabuList, solution[bestNeighbours[bestChange][0]],
+                                solution[bestNeighbours[bestChange][1]])) {
+                    bestNeighbours[bestChange][0] = -1;
+                    bestNeighbours[bestChange][1] = -1;
+                    bestNeighbours[bestChange][2] = -1;
+                    continue;
+                }
+                //koniec aspiracji
+                
+                //próg jakości
+                if (bestNeighbours[bestChange][2] > temperature) {
+                    for (int i = 0; i < (int)Math.ceil((double)this.n/10.0); i++) {
+                        bestNeighbours[i][0] = -1;
+                        bestNeighbours[i][1] = -1;
+                        bestNeighbours[i][2] = -1;
+                    }
+                    break;
+                }
+                //koniec progu jakości
+                
+                //wykonanie ruchu
+                change(bestNeighbours[bestChange][0], bestNeighbours[bestChange][1]);
+                valueOfModel += bestNeighbours[bestChange][2];
+                wasChange = true;
+                //koniec wykonania ruchu
+                
+                //uaktualnienie listy ruchów
+                bestNeighbours[bestChange][0] = -1;
+                bestNeighbours[bestChange][1] = -1;
+                bestNeighbours[bestChange][2] = -1;
+                
+                for (int i = 0; i < (int)Math.ceil((double)this.n/10.0); i++) {
+                    if (bestNeighbours[i][0] != -1) {
+                        bestNeighbours[i][2] = valueOfChanging2Items(bestNeighbours[i][0], bestNeighbours[i][1]);
+                    }
+                }
+                //koniec uaktualniania listy ruchów
+            }
+            
+            //stop conditions (P = 0, change of getting worse solution = 0% during last markow chain
+            if ((!wasChange) || (temperature < 1.0)) {
+                end = true;
+            }
+            
+            //calculate new temperature (alpha = 0.95)
+            temperature = 0.95 * temperature;
+        }
+    }
+    
+    public boolean isInTabu(int[][] tabuList, int x, int y) {
+        int x2 = x;
+        int y2 = y;
+        if (x > y) {
+            x2 = y;
+            y2 = x;
+        }
+        for (int i = 0; i < (int)Math.ceil((double)this.n/4.0); i++) {
+            if (tabuList[i][0] == x2 && tabuList[i][1] == y2) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
     public void randomChange() {
         Random random = new Random();
         
