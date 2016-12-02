@@ -49,7 +49,55 @@ public class AlgorithmTester {
             long startTime, endTime;
             long algorithmStartTime;
             double time;
+            
+            //        SIMULATED ANNEALING
+            counter = 0;
+            algorithmStartTime = System.currentTimeMillis();
+            do {
+                startTime = System.currentTimeMillis();
 
+                Model model;
+                innerCounter = 0;
+                do {
+                    model = new Model(problemCase);
+                    model.simulatedAnnealing();
+                    model.getValueOfModel();
+
+                    endTime = System.currentTimeMillis();
+                    innerCounter += 1;
+                } while (endTime - startTime < 2);
+
+                time = (double) (endTime - startTime) / innerCounter;
+
+                resultFile.write(getResultTimeLine("SimulatedAnnealing", model, optimalResult, optimalSolution, time, instance));
+                counter++;
+            } while ((counter < minIterationNumber)
+                    || (System.currentTimeMillis() - algorithmStartTime < minTime));
+
+            //        TABU SEARCH
+            counter = 0;
+            algorithmStartTime = System.currentTimeMillis();
+            do {
+                startTime = System.currentTimeMillis();
+
+                Model model;
+                innerCounter = 0;
+                do {
+                    model = new Model(problemCase);
+                    model.tabuSearch();
+                    model.getValueOfModel();
+
+                    endTime = System.currentTimeMillis();
+                    innerCounter += 1;
+                } while (endTime - startTime < 2);
+
+                time = (double) (endTime - startTime) / innerCounter;
+
+                resultFile.write(getResultTimeLine("TabuSearch", model, optimalResult, optimalSolution, time, instance));
+                counter++;
+            } while ((counter < minIterationNumber)
+                    || (System.currentTimeMillis() - algorithmStartTime < minTime));
+            
             //        GREEDY
             counter = 0;
             double avgTimeGreedy = 0.0;
@@ -289,6 +337,38 @@ public class AlgorithmTester {
                 counter++;
                 resultFile.write(getMultiRandomLine("Steepest", bestScore, "Best", instance, counter));
                 resultFile.write(getMultiRandomLine("Steepest", avgScore / (double) counter, "Average", instance, counter));
+            } while ((counter < maxIterationsNum));
+            
+            //        SIMULATED ANNEALING
+            bestScore = -1.0;
+            counter = 0;
+            avgScore = 0.0;
+            do {
+                model = new Model(problemCase);
+                model.simulatedAnnealing();
+                int score = model.getValueOfModel();
+                avgScore += (double) score;
+                if (bestScore == -1.0 || score < bestScore)
+                    bestScore = score;
+                counter++;
+                resultFile.write(getMultiRandomLine("SimulatedAnnealing", bestScore, "Best", instance, counter));
+                resultFile.write(getMultiRandomLine("SimulatedAnnealing", avgScore / (double) counter, "Average", instance, counter));
+            } while ((counter < maxIterationsNum));
+            
+            //        TABU SEARCH
+            bestScore = -1.0;
+            counter = 0;
+            avgScore = 0.0;
+            do {
+                model = new Model(problemCase);
+                model.tabuSearch();
+                int score = model.getValueOfModel();
+                avgScore += (double) score;
+                if (bestScore == -1.0 || score < bestScore)
+                    bestScore = score;
+                counter++;
+                resultFile.write(getMultiRandomLine("TabuSearch", bestScore, "Best", instance, counter));
+                resultFile.write(getMultiRandomLine("TabuSearch", avgScore / (double) counter, "Average", instance, counter));
             } while ((counter < maxIterationsNum));
         }
         resultFile.close();
