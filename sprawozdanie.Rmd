@@ -1,11 +1,11 @@
 ---
 title: "Algorytmy rozwi¹zuj¹ce problem QAP"
-author: "Micha³ KuŸma i Micha³ Biernacki"
+author: "Micha³‚ KuŸma i Micha³‚ Biernacki"
 date: "11 listopada 2016"
 output:
-  pdf_document: default
   html_document:
     keep_md: yes
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -159,14 +159,13 @@ Do okreœlenia odleg³oœci od optimum globalnego wykorzystano miarê opisan¹ wzorem
 
 $dist = \frac{Opt_{L} - Opt_{G}}{Opt_{G}}$
 
-Dla ka¿dej badanej instancji wykonano 10 pomiarów. Porównano wyniki œrednie, oraz najlepsze. Wyniki pomiarów zosta³y przedstawione na poni¿szych wykresach.
+Dla ka¿dej badanej instancji wykonano 10 pomiarów. Porównano wyniki œrednie oraz najlepsze. Wyniki pomiarów zosta³y przedstawione na poni¿szych wykresach.
 
 ```{r results_compare}
 data_results <- data %>%
-  filter(inst_size >= 40) %>%
   summarySE(measurevar = "result_dist", groupvars = c("name", "inst_size"))
 
-ggplot(data_results, aes(x = inst_size, y = result_dist)) +
+ggplot(data_results %>% filter(name != "Random"), aes(x = inst_size, y = result_dist)) +
   geom_errorbar(aes(ymin = result_dist-se, ymax = result_dist+se), width=.1) +
   geom_point() +
   facet_wrap(~ name, ncol = 2) +
@@ -175,13 +174,30 @@ ggplot(data_results, aes(x = inst_size, y = result_dist)) +
   ylab("Odleg³oœæ od optimum") +
   geom_smooth(method = "lm") +
   theme_bw()
+
+ggplot(data_results %>% filter(name == "Random"), aes(x = inst_size, y = result_dist)) +
+  geom_errorbar(aes(ymin = result_dist-se, ymax = result_dist+se), width=.1) +
+  geom_point() +
+  ggtitle("Œrednia odleg³oœæ uzyskanego przez algorytm losowy rozwi¹zania od optimum") +
+  xlab("Rozmiar instancji problemu") +
+  ylab("Odleg³oœæ od optimum") +
+  geom_smooth(method = "lm") +
+  theme_bw()
 ```
 
 ```{r best_results_compare}
-ggplot(data_results, aes(x = inst_size, y = min)) +
+ggplot(data_results %>% filter(name != "Random"), aes(x = inst_size, y = min)) +
   geom_point() +
   facet_wrap(~ name, ncol = 2) +
   ggtitle("Minimalna odleg³oœæ uzyskanego przez algorytm rozwi¹zania od optimum") +
+  xlab("Rozmiar instancji problemu") +
+  ylab("Odleg³oœæ od optimum") +
+  geom_smooth(method = "lm") +
+  theme_bw()
+
+ggplot(data_results %>% filter(name == "Random"), aes(x = inst_size, y = min)) +
+  geom_point() +
+  ggtitle("Minimalna odleg³oœæ uzyskanego przez algorytm losowy rozwi¹zania od optimum") +
   xlab("Rozmiar instancji problemu") +
   ylab("Odleg³oœæ od optimum") +
   geom_smooth(method = "lm") +
@@ -190,7 +206,7 @@ ggplot(data_results, aes(x = inst_size, y = min)) +
 
 Zaobserwowaæ mo¿na wysok¹ niestabilnoœæ uzyskanych wyników dla niektórych instancji problemu (du¿e odchylenia standardowe dla ka¿dego algorytmu). Mo¿e to byæ spowodowane skomplikowan¹ przestrzeni¹ rozwi¹zañ. 
 
-Metod¹ regresji liniowej, wyznaczono zale¿noœci miêdzy wielkoœci¹ instancji, a wzglêdn¹ odleg³oœci¹ rozwi¹zania od optimum. Poza algorytmem losowym ¿aden nie wykazuje wyraŸnej zale¿noœci pomiêdzy wielkoœci¹ instancji, a odleg³oœci¹ znalezionego rozwi¹zania od optimum. Random wraz ze wzrostem wielkoœci instancji zwraca rozwi¹zania coraz bli¿sze optymalnemu. Jest to zwi¹zane ze znacznie d³u¿czym czasem wykonywania algorytmu (takim, jak dla przeszukiwania lokalnego na danej instancji).
+Metod¹ regresji liniowej wyznaczono zale¿noœci miêdzy wielkoœci¹ instancji, a wzglêdn¹ odleg³oœci¹ rozwi¹zania od optimum. Poza algorytmem losowym ¿aden nie wykazuje wyraŸnej zale¿noœci pomiêdzy wielkoœci¹ instancji, a odleg³oœci¹ znalezionego rozwi¹zania od optimum. Random wraz ze wzrostem wielkoœci instancji zwraca rozwi¹zania coraz bli¿sze optymalnemu. Jest to zwi¹zane ze znacznie d³u¿czym czasem wykonywania algorytmu (takim, jak dla przeszukiwania lokalnego na danej instancji).
 
 Algorytmy *Greedy* i *Steepest* osi¹gaj¹ bardzo podobne œrednie rozwi¹zania. Zaproponowana heurystyka zwraca nieznacznie gorsze rozwi¹zania od algorytmów przeszukiwania lokalnego, natomiast *Random* osi¹ga rozwi¹zania daleko gorsze od pozosta³ych (poza prostymi instancjami).
 
@@ -200,7 +216,7 @@ Poniewa¿ warunkiem stopu algorytmu *Random* jest up³yniêcie okreœlonego czasu (œ
 
 ```{r times_compare}
 data_times <- data %>%
-  filter(inst_size >= 40, name != "Random") %>%
+  filter(name != "Random") %>%
   summarySE(measurevar = "time", groupvars = c("name", "inst_size"))
 
 ggplot(data_times, aes(x = inst_size, y = time)) +
@@ -230,6 +246,37 @@ Przedstawione powy¿ej wykresy czasu trwania iteracji algorytmów pokazuj¹ wzrost 
 Wykresy œredniego czasu dzia³ania pokazuj¹ rosn¹c¹ niestabilnoœæ mierzonego czasu (która nie jest jednak zale¿na jedynie od wielkoœci instancji). Najmniejsze odchylenia zanotowano dla algorytmu *Steepest LS*, co by³o do przewidzenia. W ka¿dym kroku oceni on tak¹ sam¹ liczbê s¹siadów (co zajmie tyle samo czasu), wiêc czas trwania algorytmu zale¿y wy³¹cznie od liczby wykonanych kroków. Poniewa¿ dla danej instancji wykonuje on zawsze mniej wiêcej tyle samo kroków (potwierdzaj¹ to niewielkie odchylenia standardowe na wykresie rozmiar instancji / liczba kroków), liczba odwiedzonych s¹siadów, a wiêc i czas trwania algorytmu cechuj¹ siê wysok¹ stabilnoœci¹.
 
 Trudno jednoznacznie okreœliæ, który z algorytmów przeszukiwania lokalnego dzia³a szybciej. Dla niektórych instancji krótszy czas osi¹gn¹³ *Steepest*, dla innych *Greedy*. Jest to silnie zwi¹zane z kszta³tem przestrzeni rozwi¹zañ, a nie bezpoœrednio z wielkoœci¹ instancji.
+
+## Efektywnoœæ algorytmów
+
+Przeprowadzono analizê efektywnoœci algorytmów. Miarê efektywnoœci opracowano wed³ug za³o¿enia, ¿e najwy¿sz¹ efektywnoœæ ma algorytm, który zwraca rozwi¹zanie optymalne w czasie zerowym. Miarê efektywnoœci ograniczono do przedzia³u $[0, 1]$ wed³ug poni¿szego wzoru:
+
+$efectiveness = \frac{1 + dist + time}{(dist + 1) * (time + 1)}$
+
+```{r efectiveness_compare}
+data_ef <- data %>%
+  mutate(ef = (1 + result_dist + time)/ ((result_dist + 1) * (time + 1))) %>%
+  summarySE(measurevar = "ef", groupvars = c("name", "inst_size"))
+
+ggplot(data_ef %>% filter(name != "Random"), aes(x = inst_size, y = ef)) +
+  geom_point() +
+  facet_wrap(~ name, ncol = 2) +
+  ggtitle("Œrednia efektywnoœæ algorytmu dla danego rozmiaru instancji problemu") +
+  xlab("Rozmiar instancji problemu") +
+  ylab("Efektywnoœæ") +
+  geom_smooth(method = "lm") +
+  theme_bw()
+
+ggplot(data_ef %>% filter(name == "Random"), aes(x = inst_size, y = ef)) +
+  geom_point() +
+  ggtitle("Œrednia efektywnoœæ algorytmu losowego dla danego rozmiaru instancji problemu") +
+  xlab("Rozmiar instancji problemu") +
+  ylab("Efektywnoœæ") +
+  geom_smooth(method = "lm") +
+  theme_bw()
+```
+
+pierwsz¹ obserwacj¹ jest wyraŸnie gorsza efektywnoœæ algorytmu przeszukiwania losowego. Algorytmy *Symulowane wy¿arzanie* i *Tabu Search*, a szczególnie ten pierwszy, wykazuj¹ wiêksz¹ efektywnoœæ dla wielu instancji testowych, ni¿ przeszukiwanie lokalne. Algorytm symulowanego wy¿arzania cechuje siê najmniejsz¹ zmiennoœci¹ efektywnoœci w zale¿noœci od instancji problemu (najmniejsze odchylenia od funkcji uzyskanej z regresji liniowej).
 
 ## Zale¿noœæ jakoœci rozwi¹zania koñcowego od jakoœci rozwi¹zania pocz¹tkowego (algorytmy przeszukiwania lokalnego)
 
@@ -278,7 +325,7 @@ for (i_name in unique(data_multi_random$inst_name)) {
 }
 ```
 
-Zamieszczone wykresy pokazuj¹, ¿e algorytmy stosunkowo szybko (ju¿ po 2 - 3 iteracjach) osi¹gaj¹ rozwi¹zanie bliskie koñcowemu (gdzie za koñcowe  uznajemy takie, które nie zmienia siê przez kilkadziesi¹t iteracji). Dalsze iteracje pomagaj¹ natomiast w coraz wolniejszym tempie poprawiaæ uzyskane rozwi¹zanie. Algorytm *Steepest* szybciej osi¹ga koñcowe rozwi¹zanie. Sugeruje to, ¿e efektywniej eksploruje on przestrzeñ. Wybieranie za ka¿dym razem najlepszego s¹siada mo¿e wiêc prowadziæ do wiêkszej ró¿norodnoœci znajdowanych optimów lokalnych po wielokrotnym uruchomieniu algorytmu. Wiêcej znalezionych optimów lokalnych zwiêksza natomiast prawdopodobieñstwo znalezienia optimum globalnego.
+Zamieszczone wykresy pokazuj¹, ¿e algorytmy stosunkowo szybko (ju¿ po 2 -- 3 iteracjach) osi¹gaj¹ rozwi¹zanie bliskie koñcowemu (gdzie za koñcowe  uznajemy takie, które nie zmienia siê przez kilkadziesi¹t iteracji). Dalsze iteracje pomagaj¹ natomiast w coraz wolniejszym tempie poprawiaæ uzyskane rozwi¹zanie. Algorytm *Steepest* szybciej osi¹ga koñcowe rozwi¹zanie. Sugeruje to, ¿e efektywniej eksploruje on przestrzeñ. Wybieranie za ka¿dym razem najlepszego s¹siada mo¿e wiêc prowadziæ do wiêkszej ró¿norodnoœci znajdowanych optimów lokalnych po wielokrotnym uruchomieniu algorytmu. Wiêcej znalezionych optimów lokalnych zwiêksza natomiast prawdopodobieñstwo znalezienia optimum globalnego.
 
 ## Ocena podobieñstwa znajdywanych rozwi¹zañ lokalnie optymalnych
 
@@ -313,7 +360,7 @@ for (i_name in unique(data_results_similarity$inst_name)) {
 }
 ```
 
-Wykres dla pierwszej z badanych instancji przedstawia relacjê malej¹c¹ (im bardziej podobne rozwi¹zania, tym mniejsza ró¿nica w ich jakoœci), podczas, gdy drugi nie przejawia wyraŸnej relacji omawianych wielkoœci. Rozwi¹zania znalezione dla drugiej instancji s¹ równie¿ mniej podobne do siebie wzajemnie - dla instancji problemu *had12* pary rozwi¹zañ maj¹ podobieñstwo siêgaj¹ce nawet 10 (na maksimum 12), natomiast dla *nug14* najwy¿sze podobieñstwo wynios³o 6/14.
+Wykres dla pierwszej z badanych instancji przedstawia relacjê malej¹c¹ (im bardziej podobne rozwi¹zania, tym mniejsza ró¿nica w ich jakoœci), podczas, gdy drugi nie przejawia wyraŸnej relacji omawianych wielkoœci. Rozwi¹zania znalezione dla drugiej instancji s¹ równie¿ mniej podobne do siebie wzajemnie -- dla instancji problemu *had12* pary rozwi¹zañ maj¹ podobieñstwo siêgaj¹ce nawet 10 (na maksimum 12), natomiast dla *nug14* najwy¿sze podobieñstwo wynios³o 6/14.
 
 ## Wnioski
 

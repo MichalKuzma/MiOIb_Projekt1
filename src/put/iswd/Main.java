@@ -41,8 +41,8 @@ public class Main {
             throws FileNotFoundException, IOException {
         
 //        String instance = args[0];
-        long minTime = Long.parseLong(args[1]) * 1000;
-        long minIterationNumber = Long.parseLong(args[2]);
+        long minTime = Long.parseLong(args[0]) * 1000;
+        long minIterationNumber = Long.parseLong(args[1]);
 
 //        for (int i = 0; i < resultTimeInstances.length; i++) {
 //            resultTimeInstances[i] = INSTANCE_PATH.concat(resultTimeInstances[i]);
@@ -71,10 +71,10 @@ public class Main {
         }
         
         AlgorithmTester tester = new AlgorithmTester();
-//        tester.compareResultsTimes(resultTimeInstances.toArray(new String[resultTimeInstances.size()]),
-//                new FileWriter("qap_algorithms.csv"), minTime, minIterationNumber);
-//        tester.compareGSInitResult(initResultInstances, new FileWriter("gs_init_result.csv"), 200);
-//        tester.multiRandom(multiRandomInstances, new FileWriter("multi_random.csv"), 350);
+        tester.compareResultsTimes(resultTimeInstances.toArray(new String[resultTimeInstances.size()]),
+                new FileWriter("qap_algorithms.csv"), minTime, minIterationNumber);
+        tester.compareGSInitResult(initResultInstances, new FileWriter("gs_init_result.csv"), 200);
+        tester.multiRandom(multiRandomInstances, new FileWriter("multi_random.csv"), 350);
         tester.resultSimilarity(resultSimilarityInstances, new FileWriter("results_similarity.csv"), 10);
     }
 }

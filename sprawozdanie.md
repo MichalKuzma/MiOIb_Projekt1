@@ -1,5 +1,5 @@
 # Algorytmy rozwiązujące problem QAP
-Michał Kuźma i Michał Biernacki  
+Michał‚ Kuźma i Michał‚ Biernacki  
 11 listopada 2016  
 
 
@@ -68,15 +68,15 @@ Do określenia odległości od optimum globalnego wykorzystano miarę opisaną w
 
 $dist = \frac{Opt_{L} - Opt_{G}}{Opt_{G}}$
 
-Dla każdej badanej instancji wykonano 10 pomiarów. Porównano wyniki średnie, oraz najlepsze. Wyniki pomiarów zostały przedstawione na poniższych wykresach.
+Dla każdej badanej instancji wykonano 10 pomiarów. Porównano wyniki średnie oraz najlepsze. Wyniki pomiarów zostały przedstawione na poniższych wykresach.
 
-![](sprawozdanie_files/figure-html/results_compare-1.png)<!-- -->
+![](sprawozdanie_files/figure-html/results_compare-1.png)<!-- -->![](sprawozdanie_files/figure-html/results_compare-2.png)<!-- -->
 
-![](sprawozdanie_files/figure-html/best_results_compare-1.png)<!-- -->
+![](sprawozdanie_files/figure-html/best_results_compare-1.png)<!-- -->![](sprawozdanie_files/figure-html/best_results_compare-2.png)<!-- -->
 
 Zaobserwować można wysoką niestabilność uzyskanych wyników dla niektórych instancji problemu (duże odchylenia standardowe dla każdego algorytmu). Może to być spowodowane skomplikowaną przestrzenią rozwiązań. 
 
-Metodą regresji liniowej, wyznaczono zależności między wielkością instancji, a względną odległością rozwiązania od optimum. Poza algorytmem losowym żaden nie wykazuje wyraźnej zależności pomiędzy wielkością instancji, a odległością znalezionego rozwiązania od optimum. Random wraz ze wzrostem wielkości instancji zwraca rozwiązania coraz bliższe optymalnemu. Jest to związane ze znacznie dłużczym czasem wykonywania algorytmu (takim, jak dla przeszukiwania lokalnego na danej instancji).
+Metodą regresji liniowej wyznaczono zależności między wielkością instancji, a względną odległością rozwiązania od optimum. Poza algorytmem losowym żaden nie wykazuje wyraźnej zależności pomiędzy wielkością instancji, a odległością znalezionego rozwiązania od optimum. Random wraz ze wzrostem wielkości instancji zwraca rozwiązania coraz bliższe optymalnemu. Jest to związane ze znacznie dłużczym czasem wykonywania algorytmu (takim, jak dla przeszukiwania lokalnego na danej instancji).
 
 Algorytmy *Greedy* i *Steepest* osiągają bardzo podobne średnie rozwiązania. Zaproponowana heurystyka zwraca nieznacznie gorsze rozwiązania od algorytmów przeszukiwania lokalnego, natomiast *Random* osiąga rozwiązania daleko gorsze od pozostałych (poza prostymi instancjami).
 
@@ -94,6 +94,16 @@ Wykresy średniego czasu działania pokazują rosnącą niestabilność mierzone
 
 Trudno jednoznacznie określić, który z algorytmów przeszukiwania lokalnego działa szybciej. Dla niektórych instancji krótszy czas osiągnął *Steepest*, dla innych *Greedy*. Jest to silnie związane z kształtem przestrzeni rozwiązań, a nie bezpośrednio z wielkością instancji.
 
+## Efektywność algorytmów
+
+Przeprowadzono analizę efektywności algorytmów. Miarę efektywności opracowano według założenia, że najwyższą efektywność ma algorytm, który zwraca rozwiązanie optymalne w czasie zerowym. Miarę efektywności ograniczono do przedziału $[0, 1]$ według poniższego wzoru:
+
+$efectiveness = \frac{1 + dist + time}{(dist + 1) * (time + 1)}$
+
+![](sprawozdanie_files/figure-html/efectiveness_compare-1.png)<!-- -->![](sprawozdanie_files/figure-html/efectiveness_compare-2.png)<!-- -->
+
+pierwszą obserwacją jest wyraźnie gorsza efektywność algorytmu przeszukiwania losowego. Algorytmy *Symulowane wyżarzanie* i *Tabu Search*, a szczególnie ten pierwszy, wykazują większą efektywność dla wielu instancji testowych, niż przeszukiwanie lokalne. Algorytm symulowanego wyżarzania cechuje się najmniejszą zmiennością efektywności w zależności od instancji problemu (najmniejsze odchylenia od funkcji uzyskanej z regresji liniowej).
+
 ## Zależność jakości rozwiązania końcowego od jakości rozwiązania początkowego (algorytmy przeszukiwania lokalnego)
 
 Przeprowadzono eksperyment porównujący jakość rozwiązania początkowego z jakością rozwiązania końcowego w algorytmach przeszukiwania lokalnego. Wyniki zilustrowano poniższymi wykresami.
@@ -110,7 +120,7 @@ Dla dwóch algorytmów przeszukiwania lokalnego (*Greedy* i *Steepest*) przeprow
 
 ![](sprawozdanie_files/figure-html/multi_random-1.png)<!-- -->![](sprawozdanie_files/figure-html/multi_random-2.png)<!-- -->
 
-Zamieszczone wykresy pokazują, że algorytmy stosunkowo szybko (już po 2 - 3 iteracjach) osiągają rozwiązanie bliskie końcowemu (gdzie za końcowe  uznajemy takie, które nie zmienia się przez kilkadziesiąt iteracji). Dalsze iteracje pomagają natomiast w coraz wolniejszym tempie poprawiać uzyskane rozwiązanie. Algorytm *Steepest* szybciej osiąga końcowe rozwiązanie. Sugeruje to, że efektywniej eksploruje on przestrzeń. Wybieranie za każdym razem najlepszego sąsiada może więc prowadzić do większej różnorodności znajdowanych optimów lokalnych po wielokrotnym uruchomieniu algorytmu. Więcej znalezionych optimów lokalnych zwiększa natomiast prawdopodobieństwo znalezienia optimum globalnego.
+Zamieszczone wykresy pokazują, że algorytmy stosunkowo szybko (już po 2 -- 3 iteracjach) osiągają rozwiązanie bliskie końcowemu (gdzie za końcowe  uznajemy takie, które nie zmienia się przez kilkadziesiąt iteracji). Dalsze iteracje pomagają natomiast w coraz wolniejszym tempie poprawiać uzyskane rozwiązanie. Algorytm *Steepest* szybciej osiąga końcowe rozwiązanie. Sugeruje to, że efektywniej eksploruje on przestrzeń. Wybieranie za każdym razem najlepszego sąsiada może więc prowadzić do większej różnorodności znajdowanych optimów lokalnych po wielokrotnym uruchomieniu algorytmu. Więcej znalezionych optimów lokalnych zwiększa natomiast prawdopodobieństwo znalezienia optimum globalnego.
 
 ## Ocena podobieństwa znajdywanych rozwiązań lokalnie optymalnych
 
@@ -119,17 +129,19 @@ Określono podobieństwo między rozwiązaniami znalezionymi przez algorytmy prz
 
 Permutacja 1                      Permutacja 2                       Podobieństwo
 --------------------------------  --------------------------------  -------------
-2 9 10 1 11 5 4 0 7 6 3 8         7 9 1 10 11 6 4 0 2 5 3 8                     6
-2 9 10 1 11 5 4 0 7 6 3 8         2 9 10 1 11 4 5 6 7 0 3 8                     8
-3 2 13 12 1 5 6 4 7 0 9 11 10 8   3 13 12 1 0 5 2 4 7 8 9 11 6 10               6
-3 13 2 5 9 1 12 4 8 11 0 6 7 10   5 13 3 2 9 4 12 6 8 11 0 1 7 10               8
-10 8 7 11 9 1 12 2 6 5 0 13 3 4   10 8 11 2 9 7 12 4 13 5 0 1 6 3               6
+2 9 10 1 11 4 5 6 7 0 3 8         2 9 4 1 11 10 6 0 7 5 3 8                     7
+2 9 10 1 11 4 5 6 7 0 3 8         2 9 4 1 11 10 6 0 7 5 3 8                     7
+2 9 10 1 11 4 5 6 7 0 3 8         7 10 9 11 1 4 5 6 2 0 3 8                     6
+8 3 6 0 5 10 4 1 7 11 9 2         8 3 0 5 10 6 4 9 7 11 1 2                     6
+2 9 4 1 11 10 6 0 7 5 3 8         2 9 4 1 11 10 6 0 7 5 3 8                    12
+8 3 0 6 10 5 11 4 7 1 9 2         8 3 0 5 10 6 4 9 7 11 1 2                     6
+5 13 4 6 11 1 12 8 7 10 0 3 2 9   5 13 4 7 9 1 12 8 10 11 0 3 2 6               9
 
 Sporządzono wykresy próbując zbadać zależność między podobieństwem, a różnicą w jakości dla par rozwiązań. Badanie przeprowadzono na dwóch niewielkich instancjach.
 
 ![](sprawozdanie_files/figure-html/results_similarity_graphs-1.png)<!-- -->![](sprawozdanie_files/figure-html/results_similarity_graphs-2.png)<!-- -->
 
-Wykres dla pierwszej z badanych instancji przedstawia relację malejącą (im bardziej podobne rozwiązania, tym mniejsza różnica w ich jakości), podczas, gdy drugi nie przejawia wyraźnej relacji omawianych wielkości. Rozwiązania znalezione dla drugiej instancji są również mniej podobne do siebie wzajemnie - dla instancji problemu *had12* pary rozwiązań mają podobieństwo sięgające nawet 10 (na maksimum 12), natomiast dla *nug14* najwyższe podobieństwo wyniosło 6/14.
+Wykres dla pierwszej z badanych instancji przedstawia relację malejącą (im bardziej podobne rozwiązania, tym mniejsza różnica w ich jakości), podczas, gdy drugi nie przejawia wyraźnej relacji omawianych wielkości. Rozwiązania znalezione dla drugiej instancji są również mniej podobne do siebie wzajemnie -- dla instancji problemu *had12* pary rozwiązań mają podobieństwo sięgające nawet 10 (na maksimum 12), natomiast dla *nug14* najwyższe podobieństwo wyniosło 6/14.
 
 ## Wnioski
 

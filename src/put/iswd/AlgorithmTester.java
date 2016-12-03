@@ -30,8 +30,8 @@ public class AlgorithmTester {
             try {
                 int n = scanner.nextInt();
 
-                if (n >= 100)
-                    continue;
+//                if (n >= 100)
+//                    continue;
 
                 optimalResult = Integer.toString(scanner.nextInt());
                 optimalSolution = "";
@@ -69,7 +69,7 @@ public class AlgorithmTester {
 
                 time = (double) (endTime - startTime) / innerCounter;
 
-                resultFile.write(getResultTimeLine("SimulatedAnnealing", model, optimalResult, optimalSolution, time, instance));
+                resultFile.write(getResultTimeLine("Simulated Annealing", model, optimalResult, optimalSolution, time, instance));
                 counter++;
             } while ((counter < minIterationNumber)
                     || (System.currentTimeMillis() - algorithmStartTime < minTime));
@@ -93,7 +93,7 @@ public class AlgorithmTester {
 
                 time = (double) (endTime - startTime) / innerCounter;
 
-                resultFile.write(getResultTimeLine("TabuSearch", model, optimalResult, optimalSolution, time, instance));
+                resultFile.write(getResultTimeLine("Tabu Search", model, optimalResult, optimalSolution, time, instance));
                 counter++;
             } while ((counter < minIterationNumber)
                     || (System.currentTimeMillis() - algorithmStartTime < minTime));
@@ -230,7 +230,7 @@ public class AlgorithmTester {
                     time = endTime - startTime;
                 } while (avgTimeGreedy > time);
 
-                resultFile.write(getResultTimeLine("Heuristics", bestModel, optimalResult,
+                resultFile.write(getResultTimeLine("Heuristic", bestModel, optimalResult,
                         optimalSolution, time, instance));
                 counter++;
             } while ((counter < minIterationNumber)
@@ -340,36 +340,36 @@ public class AlgorithmTester {
             } while ((counter < maxIterationsNum));
             
             //        SIMULATED ANNEALING
-            bestScore = -1.0;
-            counter = 0;
-            avgScore = 0.0;
-            do {
-                model = new Model(problemCase);
-                model.simulatedAnnealing();
-                int score = model.getValueOfModel();
-                avgScore += (double) score;
-                if (bestScore == -1.0 || score < bestScore)
-                    bestScore = score;
-                counter++;
-                resultFile.write(getMultiRandomLine("SimulatedAnnealing", bestScore, "Best", instance, counter));
-                resultFile.write(getMultiRandomLine("SimulatedAnnealing", avgScore / (double) counter, "Average", instance, counter));
-            } while ((counter < maxIterationsNum));
+//            bestScore = -1.0;
+//            counter = 0;
+//            avgScore = 0.0;
+//            do {
+//                model = new Model(problemCase);
+//                model.simulatedAnnealing();
+//                int score = model.getValueOfModel();
+//                avgScore += (double) score;
+//                if (bestScore == -1.0 || score < bestScore)
+//                    bestScore = score;
+//                counter++;
+//                resultFile.write(getMultiRandomLine("SimulatedAnnealing", bestScore, "Best", instance, counter));
+//                resultFile.write(getMultiRandomLine("SimulatedAnnealing", avgScore / (double) counter, "Average", instance, counter));
+//            } while ((counter < maxIterationsNum));
             
             //        TABU SEARCH
-            bestScore = -1.0;
-            counter = 0;
-            avgScore = 0.0;
-            do {
-                model = new Model(problemCase);
-                model.tabuSearch();
-                int score = model.getValueOfModel();
-                avgScore += (double) score;
-                if (bestScore == -1.0 || score < bestScore)
-                    bestScore = score;
-                counter++;
-                resultFile.write(getMultiRandomLine("TabuSearch", bestScore, "Best", instance, counter));
-                resultFile.write(getMultiRandomLine("TabuSearch", avgScore / (double) counter, "Average", instance, counter));
-            } while ((counter < maxIterationsNum));
+//            bestScore = -1.0;
+//            counter = 0;
+//            avgScore = 0.0;
+//            do {
+//                model = new Model(problemCase);
+//                model.tabuSearch();
+//                int score = model.getValueOfModel();
+//                avgScore += (double) score;
+//                if (bestScore == -1.0 || score < bestScore)
+//                    bestScore = score;
+//                counter++;
+//                resultFile.write(getMultiRandomLine("TabuSearch", bestScore, "Best", instance, counter));
+//                resultFile.write(getMultiRandomLine("TabuSearch", avgScore / (double) counter, "Average", instance, counter));
+//            } while ((counter < maxIterationsNum));
         }
         resultFile.close();
     }
