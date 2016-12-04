@@ -136,7 +136,8 @@ Powy¿sze wykresy pokazuj¹, ¿e w pe³nej iteracji *Steepest* wykonuje znacznie mni
 
 ### Heurystyka
 
-Algorytm heurystyczny buduje rozwi¹zanie w oparciu o predefiniowane regu³y, które zgodnie z za³o¿eniem maj¹ prowadziæ do dobrego wyniku. Zapproponowana w projekcie heurystyka dzia³a analogicznie do sortowania b¹belkowego. Po wylosowaniu permutacji startowej wybierany jest najkorzystniejszy w obecnym krajobrazie element na kolejne pozycje (0, 1, 2, ...).
+Algorytm heurystyczny buduje rozwi¹zanie w oparciu o predefiniowane regu³y, które zgodnie z za³o¿eniem maj¹ prowadziæ do dobrego wyniku.Zaproponowana w projekcie heurystyka dzia³a na bardzo naiwnym za³o¿eniu, ¿e ka¿dy element w permutacji ma swoj¹ jedn¹, najbardziej optymaln¹ pozycjê (w tej permutacji), i zawsze przesuwaj¹c ten element bli¿ej tego miejsca zwiêkszamy wartoœæ funkcji celu (zmniejszamy koszta). W takim przypadku problem ten sprowadza siê do problemu sortowania. Heurystyka rozwi¹zuje to dalej stosuj¹c podejœcie analogiczne, jak algorytm sortowania b¹belkowego, dziêki czemu z³o¿onoœæ obliczeniowa wynosi O(n<sup>2</sup>), gdzie n to rozmiar permutacji.
+Pocz¹tkowa permutacja jest tworzona w sposób losowy, dziêki czemu heurystyka mo¿e ka¿dorazowo dla jednej instancji problemu zwracaæ ró¿ne wyniki.
 
 ```
   solution = randomSolution()
