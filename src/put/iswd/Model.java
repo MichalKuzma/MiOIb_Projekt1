@@ -232,6 +232,8 @@ public class Model {
             bestNeighbours[i][2] = -1;
         }
         
+        int tabuIndex = 0;
+        
         randomSolution();
         System.arraycopy(this.solution, 0, this.initialSolution, 0, this.n);
         
@@ -342,6 +344,13 @@ public class Model {
                 change(bestNeighbours[bestChange][0], bestNeighbours[bestChange][1]);
                 valueOfModel += bestNeighbours[bestChange][2];
                 wasChange = true;
+                
+                    //dodanie do listy tabu
+                    tabuList[tabuIndex][0] = bestNeighbours[bestChange][0];
+                    tabuList[tabuIndex][1] = bestNeighbours[bestChange][1];
+                    tabuIndex++;
+                    tabuIndex = tabuIndex%((int)Math.ceil((double)this.n/4.0));
+                    
                 //koniec wykonania ruchu
                 
                 //uaktualnienie listy ruchów
