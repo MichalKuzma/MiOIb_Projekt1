@@ -154,6 +154,21 @@ Pocz¹tkowa permutacja jest tworzona w sposób losowy, dziêki czemu heurystyka mo¿
   }
 ```
 
+### Simulated Annealing
+
+Algorytm symulowanego wy¿arzania (simulated annealing) przeszukuje przestrzeñ rozwi¹zañ poprzez przechodzenie do losowego s¹siada, który poprawia, a przynajmniej za mocno nie pogarsza wartoœci funkcji celu. To czy algorytm przejdzie do pogarszaj¹cego s¹siada zale¿y od parametru temperatury. Pocz¹tkowo ustawiana jest taka wartoœæ temperatury, by 95% losowych s¹siadów by³o akceptowanych, a nastêpnie, co okreœlon¹ iloœæ kroków ([wielkoœæ instancji]<sub>2</sub>) jest on zmniejszany (w naszym zastosowaniu, jest temperatura mno¿ona razy 0.95, bo taka wartoœæ dawa³a najlepsze rezultaty w stosunku do czasu przetwarzania).
+Algorytm koñczy swoje dzia³anie, gdy nie znajdzie akceptowalnego s¹siada w okreœlonej liczbie prób ([wielkoœæ instancji]<sub>2</sub>), lub gdy temperatura osi¹gnie tak¹ wartoœæ, ¿e prawdopodobieñstwo akceptacji ruchów pogarszaj¹cych bêdzie wynosi³o 0%.
+
+### Tabu Search
+
+Algorytm przeszukiwania tabu (tabu search) w ka¿dym etapie wybiera listê kilku najlepszych mo¿liwych ruchów (o rozmiarze [wielkoœæ instancji]/10). Dalej z tej listy wybierane s¹ kolejno najlepsze ruchy w stosunku do aktualnego stanu, a¿ lista nie zostanie pusta. Ruch odrzucany jest na 2 sposoby:
+
+- Gdy strata jest zbyt du¿a, w tym z czasem dzia³ania akceptowalna strata jest coraz mniejsza. Analogicznie jak temperatura w algorytmie symulowanego wy¿arzania.
+- Gdy ruch znajduje siê na liœcie tabu, akceptowany jest tylko je¿eli polepsza wartoœæ funkcji celu.
+
+Lista tabu ma na celu zablokowanie "cofania" siê - s¹ na niej ruchy przeciwne (takie które przywróci³yby stan) do ruchów ostatnio wykonanych. W naszej implementacji ma ona rozmiar nie wiêkszy ni¿ [wielkoœæ instancji]/4. Po wykonaniu ka¿dego ruchu, ruch do niego przeciwny jest dodawany do listy, a najstarszy na liœcie jest odrzucany.
+Algorytm koñczy swoje dzia³anie w podobny sposób jak algorytm symulowanego wy¿arzania - gdy przez du¿¹ liczbê operacji ([wielkoœæ instancji]<sub>2</sub>) nie zostanie wykonany ¿aden ruch, lub gdy prawdopodobieñstwo akceptacji ruchów pogarszaj¹cych bêdzie wynosi³o 0%.
+
 ## Porównanie odleg³oœci od optimum rozwi¹zañ uzyskanych przez badane algorytmy
 
 Do okreœlenia odleg³oœci od optimum globalnego wykorzystano miarê opisan¹ wzorem:
