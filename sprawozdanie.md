@@ -1,6 +1,6 @@
 # Algorytmy rozwiązujące problem QAP
 Michał‚ Kuźma i Michał‚ Biernacki  
-11 listopada 2016  
+5 grudnia 2016  
 
 
 
@@ -65,11 +65,19 @@ Początkowa permutacja jest tworzona w sposób losowy, dzięki czemu heurystyka 
 
 ### Simulated Annealing
 
-TODO: Describe
+Algorytm symulowanego wyżarzania (simulated annealing) przeszukuje przestrzeń rozwiązań poprzez przechodzenie do losowego sąsiada, który poprawia, a przynajmniej za mocno nie pogarsza wartości funkcji celu. To czy algorytm przejdzie do pogarszającego sąsiada zależy od parametru temperatury. Początkowo ustawiana jest taka wartość temperatury, by 95% losowych sąsiadów było akceptowanych, a następnie, co określoną ilość kroków ([wielkość instancji]<sub>2</sub>) jest on zmniejszany (w naszym zastosowaniu, jest temperatura mnożona razy 0.95, bo taka wartość dawała najlepsze rezultaty w stosunku do czasu przetwarzania).
+Algorytm kończy swoje działanie, gdy nie znajdzie akceptowalnego sąsiada w określonej liczbie prób ([wielkość instancji]<sub>2</sub>), lub gdy temperatura osiągnie taką wartość, że prawdopodobieństwo akceptacji ruchów pogarszających będzie wynosiło 0%.
 
 ### Tabu Search
 
-TODO: Describe
+Algorytm przeszukiwania tabu (tabu search) w każdym etapie wybiera listę kilku najlepszych możliwych ruchów (o rozmiarze [wielkość instancji]/10). Dalej z tej listy wybierane są kolejno najlepsze ruchy w stosunku do aktualnego stanu, aż lista nie zostanie pusta. Ruch odrzucany jest na 2 sposoby:
+
+- Gdy strata jest zbyt duża, w tym z czasem działania akceptowalna strata jest coraz mniejsza. Analogicznie jak temperatura w algorytmie symulowanego wyżarzania.
+- Gdy ruch znajduje się na liście tabu, akceptowany jest tylko jeżeli polepsza wartość funkcji celu.
+
+Lista tabu ma na celu zablokowanie "cofania" się - są na niej ruchy przeciwne (takie które przywróciłyby stan) do ruchów ostatnio wykonanych. W naszej implementacji ma ona rozmiar nie większy niż [wielkość instancji]/4. Po wykonaniu każdego ruchu, ruch do niego przeciwny jest dodawany do listy, a najstarszy na liście jest odrzucany.
+Algorytm kończy swoje działanie w podobny sposób jak algorytm symulowanego wyżarzania - gdy przez dużą liczbę operacji ([wielkość instancji]<sub>2</sub>) nie zostanie wykonany żaden ruch, lub gdy prawdopodobieństwo akceptacji ruchów pogarszających będzie wynosiło 0%.
+
 
 ## Porównanie odległości od optimum rozwiązań uzyskanych przez badane algorytmy
 
@@ -87,7 +95,7 @@ Ze względu na diametralnie gorsze wyniki, dla lepszej czytelności, wykres algo
 
 Zaobserwować można wysoką niestabilność uzyskanych wyników dla niektórych instancji problemu (duże odchylenia standardowe dla każdego algorytmu). Może to być spowodowane skomplikowaną przestrzenią rozwiązań. 
 
-Metodą regresji liniowej wyznaczono zależności między wielkością instancji, a względną odległością rozwiązania od optimum. Wszystkie badane algorytmy zdają się wykazywać niezależność jakości rozwiązania końcowego (odległości od optimum) od wielkości instancji. Różnice w jakości końcowego rozwiązania powodowane są raczej różnym stopniem skomplikowania powierzchni rozwiązań dla danych instancji.
+Wszystkie badane algorytmy zdają się wykazywać niezależność jakości rozwiązania końcowego (odległości od optimum) od wielkości instancji. Różnice w jakości końcowego rozwiązania powodowane są raczej różnym stopniem skomplikowania powierzchni rozwiązań dla danych instancji.
 
 Algorytmy *Greedy* i *Steepest* osiągają bardzo podobne średnie rozwiązania. Zaproponowana heurystyka zwraca nieznacznie gorsze rozwiązania od algorytmów przeszukiwania lokalnego, natomiast *Random* osiąga rozwiązania daleko gorsze od pozostałych (poza prostymi instancjami).
 
@@ -152,19 +160,25 @@ Sporządzono wykresy próbując zbadać zależność między podobieństwem, a r
 
 ![](sprawozdanie_files/figure-html/results_similarity_graphs-1.png)<!-- -->![](sprawozdanie_files/figure-html/results_similarity_graphs-2.png)<!-- -->
 
-Wykres dla pierwszej z badanych instancji przedstawia relację malejącą (im bardziej podobne rozwiązania, tym mniejsza różnica w ich jakości), podczas, gdy drugi nie przejawia wyraźnej relacji omawianych wielkości. Rozwiązania znalezione dla drugiej instancji są również mniej podobne do siebie wzajemnie -- dla instancji problemu *had12* pary rozwiązań mają podobieństwo sięgające nawet 10 (na maksimum 12), natomiast dla *nug14* najwyższe podobieństwo wyniosło 6/14.
+Dla obu instancji problemu zaobserwowano zależność między podobieństwem rozwiązań, a różnicą ich jakości. Dla rozwiązań różniących się znacznie od siebie, różnica jakości wydaje się być losowa (występują zarówno pary o podobnej jakości, jak i bardzo odległe od siebie). Natomiast rozwiązania podobne do siebie częściej mają niewielką róźnicę jakości.
 
 ## Wnioski
 
-W ramach zadania zaimplementowano i przetestowano 4 algorytmy rozwiązujące problem QAP: *Random Search*, *Greedy Local Search*, *Steepest Local Search* oraz autorski algorytm heurystyczny. Do przeszukiwania przestrzeni rozwiązań skorzystano z sąsiedztwa 2-OPT, które dla każdego rozwiązania zwraca n<sup>2</sup> jego sąsiadów. 
+W ramach zadania zaimplementowano i przetestowano 6 algorytmów rozwiązujących problem QAP: *Random Search*, *Greedy Local Search*, *Steepest Local Search*, *Simulated Annealing*, *Tabu Search* oraz autorski algorytm heurystyczny. Do przeszukiwania przestrzeni rozwiązań skorzystano z sąsiedztwa 2-OPT, które dla każdego rozwiązania zwraca n<sup>2</sup> jego sąsiadów. 
 
 W pierwszej kolejności porównano liczbę wykonanych kroków oraz sprawdzonych sąsiadów przez algorytmy *Greedy LS* i *Steepest LS*. Okazało się, że jakkolwiek *Steepest* wykonuje znacznie mniej kroków dla każdej badanej instancji, liczba sprawdzonych przez niego sąsiadów w pełnej iteracji jest zazwyczaj wyższa od "konkurenta".
 
-Względna odległość znalezionego rozwiązania od optimum globalnego jest niezależna od wielkości instancji, a dla algorytmu *Random Search* jest ona nawet tym mniejsza, im większa jest instancja problemu. Jest to jednak w dużej mierze znacznym wydłużeniem czasu działania RS dla większych instancji.
+Względna odległość znalezionego rozwiązania od optimum globalnego jest niezależna od wielkości instancji. Różnice w jakości rozwiązania wynikają raczej z "trudności" instancji problemu - stopnia skomplikowania przestrzeni rozwiązań.
 
-Czas wykonywania algorytmów rośnie wraz ze wzrostem wielkości instancji. Jest to spodziewany wniosek, jednak należy zauważyć, że od tej reguły są wyjątki i długość permutacji nie jest jedynym kryterium determinującym czas wykonywania algorytmu. Najbardziej stabilny czas wykonywania wykazuje *Steepest Local Search*, co jest zrozumiałe biorąc pod uwagę, że w każdym kroku przeszukuje całe dostępne sąsiedztwo (które ma równą liczność w każdym punkcie przestrzeni rozwiązań).
+Czas wykonywania algorytmów rośnie wraz ze wzrostem wielkości instancji. Jest to spodziewany wniosek, jednak należy zauważyć, że od tej reguły są wyjątki i długość permutacji nie jest jedynym kryterium determinującym czas wykonywania algorytmu. Czas wykonywania algorytmu dla wszystkich testowanych algorytmów zdaje się rosnąć wielomianowo, jednak znacznie szybciej dla algorytmów *Simulated Annealing* i *Tabu Search* (wyższy stopień wielomianu).
+
+Najbardziej stabilny czas wykonywania wykazuje *Steepest Local Search*, co jest zrozumiałe biorąc pod uwagę, że w każdym kroku przeszukuje całe dostępne sąsiedztwo (które ma równą liczność w każdym punkcie przestrzeni rozwiązań).
+
+TODO: Opisać niestabilność czasu wykonywania *SA* i *TS*.
 
 Porównanie czasu wykonywania algorytmów *Greedy* i *Steepest* prowadzi do wniosku, że żaden z nich nie jest jednoznacznie lepszy od drugiego. Zawsze znajdzie się instancja, dla której *Greedy* zakończy się szybciej oraz taka, dla której to *Steepest* osiągnie lepszy czas.
+
+Zaproponowano miarę efektywności iteracji algorytmów. Uzależniono ją od czasu trwania iteracji i jakości znalezionego rozwiązania (odległości od rozwiązania optymalnego). Uzyskane wyniki pokazują lepsze wyniki algorytmów *SA* i *TS*, jednak dla dużych instancji problemu, znaczny czas wykonywania prowadzi do niskiej oceny efektywności.
 
 Nie można wskazać wyrażnej zależności między jakością rozwiązania początkowego, a końcowego w algorytmach przeszukiwania lokalnego. Jedyną pewną zależnością jest, że zwrócone rozwiązanie będzie się charakteryzowało jakością nie gorszą od początkowego.
 

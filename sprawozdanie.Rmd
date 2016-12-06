@@ -1,7 +1,7 @@
 ---
-title: "Algorytmy rozwiï¿½zujï¿½ce problem QAP"
-author: "Michaï¿½ï¿½ Kuï¿½ma i Michaï¿½ï¿½ Biernacki"
-date: "11 listopada 2016"
+title: "Algorytmy rozwi¹zuj¹ce problem QAP"
+author: "Micha³‚ KuŸma i Micha³‚ Biernacki"
+date: "5 grudnia 2016"
 output:
   html_document:
     keep_md: yes
@@ -73,34 +73,34 @@ data <- data %>%
 
 ## Opis problemu
 
-QAP (Quadratic assignment problem) reprezentuje nastï¿½pujï¿½ce zadanie:
+QAP (Quadratic assignment problem) reprezentuje nastêpuj¹ce zadanie:
 
-*Dane sï¿½ zbiory n lokalizacji i n oï¿½rodkï¿½w. Kaï¿½da para lokacji znajduje siï¿½ w okreï¿½lonej odlegï¿½oï¿½ci od siebie, a dla kaï¿½dej pary oï¿½rodkï¿½w znany jest przepï¿½yw. Celem jest takie przypisanie oï¿½rodkï¿½w do lokalizacji, aby zminimalizowaï¿½ sumï¿½ iloczynï¿½w odlegï¿½oï¿½ci i przepï¿½ywï¿½w.*
+*Dane s¹ zbiory n lokalizacji i n oœrodków. Ka¿da para lokacji znajduje siê w okreœlonej odleg³oœci od siebie, a dla ka¿dej pary oœrodków znany jest przep³yw. Celem jest takie przypisanie oœrodków do lokalizacji, aby zminimalizowaæ sumê iloczynów odleg³oœci i przep³ywów.*
 
-Problem wykorzystywany jest czï¿½sto do zamodelowania zadania rozmieszczenia fabryk (oï¿½rodkï¿½w) w zestawie znanych lokalizacji. Jako przepï¿½ywy podane sï¿½ wï¿½wczas interakcje, w jakie fabryki wchodzï¿½ wzajemnie (transport surowcï¿½w, etc.).
+Problem wykorzystywany jest czêsto do zamodelowania zadania rozmieszczenia fabryk (oœrodków) w zestawie znanych lokalizacji. Jako przep³ywy podane s¹ wówczas interakcje, w jakie fabryki wchodz¹ wzajemnie (transport surowców, etc.).
 
-Poniewaï¿½ problem naleï¿½y do grupy NP-trudnych, nie jest znany algorytm, ktï¿½ry pozwoliï¿½by na znalezienie dokï¿½adnego rozwiï¿½zania w czasie wielomianowym. W celu osiï¿½gniï¿½cia zadowalajï¿½cych wynikï¿½w czasowych uzyskujï¿½c dobre rozwiï¿½zanie, wykorzystuje siï¿½ algorytmy heurystyczne i metaheurystyki.
+Poniewa¿ problem nale¿y do grupy NP-trudnych, nie jest znany algorytm, który pozwoli³by na znalezienie dok³adnego rozwi¹zania w czasie wielomianowym. W celu osi¹gniêcia zadowalaj¹cych wyników czasowych uzyskuj¹c dobre rozwi¹zanie, wykorzystuje siê algorytmy heurystyczne i metaheurystyki.
 
-## Operator sï¿½siedztwa
+## Operator s¹siedztwa
 
-W projekcie korzystano z operatora sï¿½siedztwa 2-OPT, ktï¿½ry dla kaï¿½dej permutacji zwraca sï¿½siedztwo zï¿½oï¿½one ze wszystkich permutacji uzyskanych przez zamianï¿½ dwï¿½ch pozycji miejscami.
+W projekcie korzystano z operatora s¹siedztwa 2-OPT, który dla ka¿dej permutacji zwraca s¹siedztwo z³o¿one ze wszystkich permutacji uzyskanych przez zamianê dwóch pozycji miejscami.
 
-Wykorzystanie tego operatora sprawia, ï¿½e wielkoï¿½ï¿½ sï¿½siedztwa kaï¿½dej permutacji wynosi n<sup>2</sup> (gdzie n to dï¿½ugoï¿½ï¿½ permutacji).
+Wykorzystanie tego operatora sprawia, ¿e wielkoœæ s¹siedztwa ka¿dej permutacji wynosi n<sup>2</sup> (gdzie n to d³ugoœæ permutacji).
 
-## Krï¿½tki opis zaimplementowanych algorytmï¿½w
+## Krótki opis zaimplementowanych algorytmów
 
 ### Random Search
 
-Algorytm przeszukiwania losowego (Random Search) jest najprostszym z wykorzystanych w projekcie. Przez okreï¿½lony czas losuje on rozwiï¿½zania i na koniec zwraca najlepsze z nich. Parametr czasowy stanowi jedyne kryterium stopu algorytmu.
+Algorytm przeszukiwania losowego (Random Search) jest najprostszym z wykorzystanych w projekcie. Przez okreœlony czas losuje on rozwi¹zania i na koniec zwraca najlepsze z nich. Parametr czasowy stanowi jedyne kryterium stopu algorytmu.
 
 ### Local Search
 
-Algorytm przeszukiwania lokalnego (Local Search) wyszukuje lepsze rozwiï¿½zania w zbiorach sï¿½siedztwa aï¿½ do osiï¿½gniï¿½cia optimum lokalnego. Nie daje jednak ï¿½adnej gwarancji odnalezienia optimum globalnego. Algorytm zostaï¿½ zaimplementowany w dwï¿½ch wersjach rï¿½ï¿½niï¿½cych siï¿½ sposobem wyboru sï¿½siada, do ktï¿½rego algorytm powinien przejï¿½ï¿½.
+Algorytm przeszukiwania lokalnego (Local Search) wyszukuje lepsze rozwi¹zania w zbiorach s¹siedztwa a¿ do osi¹gniêcia optimum lokalnego. Nie daje jednak ¿adnej gwarancji odnalezienia optimum globalnego. Algorytm zosta³ zaimplementowany w dwóch wersjach ró¿ni¹cych siê sposobem wyboru s¹siada, do którego algorytm powinien przejœæ.
 
-- *Greedy Local Search* wybiera pierwszego sï¿½siada, ktï¿½ry jest lepszy od obecnie rozpatrywanego rozwiï¿½zania.
-- *Steepest Local Search* przeszukuje caï¿½e sï¿½siedztwo wybierajï¿½c najlepszego sï¿½siada i przechodzi do niego, jeï¿½li jest lepszy od obecnego rozwiï¿½zania.
+- *Greedy Local Search* wybiera pierwszego s¹siada, który jest lepszy od obecnie rozpatrywanego rozwi¹zania.
+- *Steepest Local Search* przeszukuje ca³e s¹siedztwo wybieraj¹c najlepszego s¹siada i przechodzi do niego, jeœli jest lepszy od obecnego rozwi¹zania.
 
-Przeprowadzono eksperyment zliczajï¿½cy, ilu sï¿½siadï¿½w oceniajï¿½ obie wersje algorytmu, oraz ile krokï¿½w robiï¿½. Wyniki przedstawiono na poniï¿½szych wykresach. W celu lepszej czytelnoï¿½ci wykresï¿½w, wybrano instancje o wielkoï¿½ci mniejszej, niï¿½ $n = 30$.
+Przeprowadzono eksperyment zliczaj¹cy, ilu s¹siadów oceniaj¹ obie wersje algorytmu, oraz ile kroków robi¹. Wyniki przedstawiono na poni¿szych wykresach. W celu lepszej czytelnoœci wykresów, wybrano instancje o wielkoœci mniejszej, ni¿ $n = 30$.
 
 ```{r gs_compare}
 # Neighbours count
@@ -112,9 +112,9 @@ ggplot(data_results, aes(x = inst_size, y = rev_neigh)) +
   geom_errorbar(aes(ymin = rev_neigh-se, ymax = rev_neigh+se), width=.1) +
   geom_point() +
   facet_wrap(~ name, ncol = 2) +
-  ggtitle("Liczba sï¿½siadï¿½w ocenionych przez algorytm w jednej iteracji") +
+  ggtitle("Liczba s¹siadów ocenionych przez algorytm w jednej iteracji") +
   xlab("Rozmiar instancji problemu") +
-  ylab("Liczba ocenionych sï¿½siadï¿½w") +
+  ylab("Liczba ocenionych s¹siadów") +
   theme_bw()
 
 # Time
@@ -126,18 +126,18 @@ ggplot(data_results, aes(x = inst_size, y = steps_count)) +
   geom_errorbar(aes(ymin = steps_count-se, ymax = steps_count+se), width=.1) +
   geom_point() +
   facet_wrap(~ name, ncol = 2) +
-  ggtitle("Liczba krokï¿½w wykonanych przez algorytm w jednej iteracji") +
+  ggtitle("Liczba kroków wykonanych przez algorytm w jednej iteracji") +
   xlab("Rozmiar instancji problemu") +
-  ylab("Liczba wykonanych krokï¿½w") +
+  ylab("Liczba wykonanych kroków") +
   theme_bw()
 ```
 
-Powyï¿½sze wykresy pokazujï¿½, ï¿½e w peï¿½nej iteracji *Steepest* wykonuje znacznie mniej krokï¿½w od algorytmu *Greedy*, jednak poniewaï¿½ za kaï¿½dym razem sprawdza wszystkich moï¿½liwych sï¿½siadï¿½w, liczba ocenionych przez niego rozwiï¿½zaï¿½ jest wiï¿½ksza dla wiï¿½kszoï¿½ci instancji problemu. Algorytm *Greedy* wykazuje duï¿½ï¿½ niestabilnoï¿½ï¿½ zarï¿½wno w liczbie wykonanych krokï¿½w, jak i ocenionych sï¿½siadï¿½w (Dla wiï¿½kszoï¿½ci instancji odchylenia sï¿½ wiï¿½ksze, niï¿½ w *Steepest*).
+Powy¿sze wykresy pokazuj¹, ¿e w pe³nej iteracji *Steepest* wykonuje znacznie mniej kroków od algorytmu *Greedy*, jednak poniewa¿ za ka¿dym razem sprawdza wszystkich mo¿liwych s¹siadów, liczba ocenionych przez niego rozwi¹zañ jest wiêksza dla wiêkszoœci instancji problemu. Algorytm *Greedy* wykazuje du¿¹ niestabilnoœæ zarówno w liczbie wykonanych kroków, jak i ocenionych s¹siadów (Dla wiêkszoœci instancji odchylenia s¹ wiêksze, ni¿ w *Steepest*).
 
 ### Heurystyka
 
-Algorytm heurystyczny buduje rozwiï¿½zanie w oparciu o predefiniowane reguï¿½y, ktï¿½re zgodnie z zaï¿½oï¿½eniem majï¿½ prowadziï¿½ do dobrego wyniku.Zaproponowana w projekcie heurystyka dziaï¿½a na bardzo naiwnym zaï¿½oï¿½eniu, ï¿½e kaï¿½dy element w permutacji ma swojï¿½ jednï¿½, najbardziej optymalnï¿½ pozycjï¿½ (w tej permutacji), i zawsze przesuwajï¿½c ten element bliï¿½ej tego miejsca zwiï¿½kszamy wartoï¿½ï¿½ funkcji celu (zmniejszamy koszta). W takim przypadku problem ten sprowadza siï¿½ do problemu sortowania. Heurystyka rozwiï¿½zuje to dalej stosujï¿½c podejï¿½cie analogiczne, jak algorytm sortowania bï¿½belkowego, dziï¿½ki czemu zï¿½oï¿½onoï¿½ï¿½ obliczeniowa wynosi O(n<sup>2</sup>), gdzie n to rozmiar permutacji.
-Poczï¿½tkowa permutacja jest tworzona w sposï¿½b losowy, dziï¿½ki czemu heurystyka moï¿½e kaï¿½dorazowo dla jednej instancji problemu zwracaï¿½ rï¿½ï¿½ne wyniki.
+Algorytm heurystyczny buduje rozwi¹zanie w oparciu o predefiniowane regu³y, które zgodnie z za³o¿eniem maj¹ prowadziæ do dobrego wyniku.Zaproponowana w projekcie heurystyka dzia³a na bardzo naiwnym za³o¿eniu, ¿e ka¿dy element w permutacji ma swoj¹ jedn¹, najbardziej optymaln¹ pozycjê (w tej permutacji), i zawsze przesuwaj¹c ten element bli¿ej tego miejsca zwiêkszamy wartoœæ funkcji celu (zmniejszamy koszta). W takim przypadku problem ten sprowadza siê do problemu sortowania. Heurystyka rozwi¹zuje to dalej stosuj¹c podejœcie analogiczne, jak algorytm sortowania b¹belkowego, dziêki czemu z³o¿onoœæ obliczeniowa wynosi O(n<sup>2</sup>), gdzie n to rozmiar permutacji.
+Pocz¹tkowa permutacja jest tworzona w sposób losowy, dziêki czemu heurystyka mo¿e ka¿dorazowo dla jednej instancji problemu zwracaæ ró¿ne wyniki.
 
 ```
   solution = randomSolution()
@@ -156,26 +156,27 @@ Poczï¿½tkowa permutacja jest tworzona w sposï¿½b losowy, dziï¿½ki czemu heurysty
 
 ### Simulated Annealing
 
-Algorytm symulowanego wyï¿½arzania (simulated annealing) przeszukuje przestrzeï¿½ rozwiï¿½zaï¿½ poprzez przechodzenie do losowego sï¿½siada, ktï¿½ry poprawia, a przynajmniej za mocno nie pogarsza wartoï¿½ci funkcji celu. To czy algorytm przejdzie do pogarszajï¿½cego sï¿½siada zaleï¿½y od parametru temperatury. Poczï¿½tkowo ustawiana jest taka wartoï¿½ï¿½ temperatury, by 95% losowych sï¿½siadï¿½w byï¿½o akceptowanych, a nastï¿½pnie, co okreï¿½lonï¿½ iloï¿½ï¿½ krokï¿½w ([wielkoï¿½ï¿½ instancji]<sub>2</sub>) jest on zmniejszany (w naszym zastosowaniu, jest temperatura mnoï¿½ona razy 0.95, bo taka wartoï¿½ï¿½ dawaï¿½a najlepsze rezultaty w stosunku do czasu przetwarzania).
-Algorytm koï¿½czy swoje dziaï¿½anie, gdy nie znajdzie akceptowalnego sï¿½siada w okreï¿½lonej liczbie prï¿½b ([wielkoï¿½ï¿½ instancji]<sub>2</sub>), lub gdy temperatura osiï¿½gnie takï¿½ wartoï¿½ï¿½, ï¿½e prawdopodobieï¿½stwo akceptacji ruchï¿½w pogarszajï¿½cych bï¿½dzie wynosiï¿½o 0%.
+Algorytm symulowanego wy¿arzania (simulated annealing) przeszukuje przestrzeñ rozwi¹zañ poprzez przechodzenie do losowego s¹siada, który poprawia, a przynajmniej za mocno nie pogarsza wartoœci funkcji celu. To czy algorytm przejdzie do pogarszaj¹cego s¹siada zale¿y od parametru temperatury. Pocz¹tkowo ustawiana jest taka wartoœæ temperatury, by 95% losowych s¹siadów by³o akceptowanych, a nastêpnie, co okreœlon¹ iloœæ kroków ([wielkoœæ instancji]<sub>2</sub>) jest on zmniejszany (w naszym zastosowaniu, jest temperatura mno¿ona razy 0.95, bo taka wartoœæ dawa³a najlepsze rezultaty w stosunku do czasu przetwarzania).
+Algorytm koñczy swoje dzia³anie, gdy nie znajdzie akceptowalnego s¹siada w okreœlonej liczbie prób ([wielkoœæ instancji]<sub>2</sub>), lub gdy temperatura osi¹gnie tak¹ wartoœæ, ¿e prawdopodobieñstwo akceptacji ruchów pogarszaj¹cych bêdzie wynosi³o 0%.
 
 ### Tabu Search
 
-Algorytm przeszukiwania tabu (tabu search) w kaï¿½dym etapie wybiera listï¿½ kilku najlepszych moï¿½liwych ruchï¿½w (o rozmiarze [wielkoï¿½ï¿½ instancji]/10). Dalej z tej listy wybierane sï¿½ kolejno najlepsze ruchy w stosunku do aktualnego stanu, aï¿½ lista nie zostanie pusta. Ruch odrzucany jest na 2 sposoby:
+Algorytm przeszukiwania tabu (tabu search) w ka¿dym etapie wybiera listê kilku najlepszych mo¿liwych ruchów (o rozmiarze [wielkoœæ instancji]/10). Dalej z tej listy wybierane s¹ kolejno najlepsze ruchy w stosunku do aktualnego stanu, a¿ lista nie zostanie pusta. Ruch odrzucany jest na 2 sposoby:
 
-- Gdy strata jest zbyt duï¿½a, w tym z czasem dziaï¿½ania akceptowalna strata jest coraz mniejsza. Analogicznie jak temperatura w algorytmie symulowanego wyï¿½arzania.
-- Gdy ruch znajduje siï¿½ na liï¿½cie tabu, akceptowany jest tylko jeï¿½eli polepsza wartoï¿½ï¿½ funkcji celu.
+- Gdy strata jest zbyt du¿a, w tym z czasem dzia³ania akceptowalna strata jest coraz mniejsza. Analogicznie jak temperatura w algorytmie symulowanego wy¿arzania.
+- Gdy ruch znajduje siê na liœcie tabu, akceptowany jest tylko je¿eli polepsza wartoœæ funkcji celu.
 
-Lista tabu ma na celu zablokowanie "cofania" siï¿½ - sï¿½ na niej ruchy przeciwne (takie ktï¿½re przywrï¿½ciï¿½yby stan) do ruchï¿½w ostatnio wykonanych. W naszej implementacji ma ona rozmiar nie wiï¿½kszy niï¿½ [wielkoï¿½ï¿½ instancji]/4. Po wykonaniu kaï¿½dego ruchu, ruch do niego przeciwny jest dodawany do listy, a najstarszy na liï¿½cie jest odrzucany.
-Algorytm koï¿½czy swoje dziaï¿½anie w podobny sposï¿½b jak algorytm symulowanego wyï¿½arzania - gdy przez duï¿½ï¿½ liczbï¿½ operacji ([wielkoï¿½ï¿½ instancji]<sub>2</sub>) nie zostanie wykonany ï¿½aden ruch, lub gdy prawdopodobieï¿½stwo akceptacji ruchï¿½w pogarszajï¿½cych bï¿½dzie wynosiï¿½o 0%.
+Lista tabu ma na celu zablokowanie "cofania" siê - s¹ na niej ruchy przeciwne (takie które przywróci³yby stan) do ruchów ostatnio wykonanych. W naszej implementacji ma ona rozmiar nie wiêkszy ni¿ [wielkoœæ instancji]/4. Po wykonaniu ka¿dego ruchu, ruch do niego przeciwny jest dodawany do listy, a najstarszy na liœcie jest odrzucany.
+Algorytm koñczy swoje dzia³anie w podobny sposób jak algorytm symulowanego wy¿arzania - gdy przez du¿¹ liczbê operacji ([wielkoœæ instancji]<sub>2</sub>) nie zostanie wykonany ¿aden ruch, lub gdy prawdopodobieñstwo akceptacji ruchów pogarszaj¹cych bêdzie wynosi³o 0%.
 
-## Porï¿½wnanie odlegï¿½oï¿½ci od optimum rozwiï¿½zaï¿½ uzyskanych przez badane algorytmy
 
-Do okreï¿½lenia odlegï¿½oï¿½ci od optimum globalnego wykorzystano miarï¿½ opisanï¿½ wzorem:
+## Porównanie odleg³oœci od optimum rozwi¹zañ uzyskanych przez badane algorytmy
+
+Do okreœlenia odleg³oœci od optimum globalnego wykorzystano miarê opisan¹ wzorem:
 
 $dist = \frac{Opt_{L} - Opt_{G}}{Opt_{G}}$
 
-Dla kaï¿½dej badanej instancji wykonano 10 pomiarï¿½w. Porï¿½wnano wyniki ï¿½rednie oraz najlepsze. Wyniki pomiarï¿½w zostaï¿½y przedstawione na poniï¿½szych wykresach.
+Dla ka¿dej badanej instancji wykonano 10 pomiarów. Porównano wyniki œrednie oraz najlepsze. Wyniki pomiarów zosta³y przedstawione na poni¿szych wykresach.
 
 ```{r results_compare}
 data_results <- data %>%
@@ -186,17 +187,17 @@ ggplot(data_results %>% filter(name != "Random"), aes(x = inst_size, y = result_
   geom_errorbar(aes(ymin = result_dist-se, ymax = result_dist+se), width=.1) +
   geom_point() +
   facet_wrap(~ name, ncol = 2) +
-  ggtitle("ï¿½rednia odlegï¿½oï¿½ï¿½ uzyskanego przez algorytm rozwiï¿½zania od optimum") +
+  ggtitle("Œrednia odleg³oœæ uzyskanego przez algorytm rozwi¹zania od optimum") +
   xlab("Rozmiar instancji problemu") +
-  ylab("Odlegï¿½oï¿½ï¿½ od optimum") +
+  ylab("Odleg³oœæ od optimum") +
   theme_bw()
 
 ggplot(data_results %>% filter(name == "Random"), aes(x = inst_size, y = result_dist)) +
   geom_errorbar(aes(ymin = result_dist-se, ymax = result_dist+se), width=.1) +
   geom_point() +
-  ggtitle("ï¿½rednia odlegï¿½oï¿½ï¿½ uzyskanego przez algorytm losowy rozwiï¿½zania od optimum") +
+  ggtitle("Œrednia odleg³oœæ uzyskanego przez algorytm losowy rozwi¹zania od optimum") +
   xlab("Rozmiar instancji problemu") +
-  ylab("Odlegï¿½oï¿½ï¿½ od optimum") +
+  ylab("Odleg³oœæ od optimum") +
   theme_bw()
 ```
 
@@ -204,32 +205,32 @@ ggplot(data_results %>% filter(name == "Random"), aes(x = inst_size, y = result_
 ggplot(data_results %>% filter(name != "Random"), aes(x = inst_size, y = min)) +
   geom_point() +
   facet_wrap(~ name, ncol = 2) +
-  ggtitle("Minimalna odlegï¿½oï¿½ï¿½ uzyskanego przez algorytm rozwiï¿½zania od optimum") +
+  ggtitle("Minimalna odleg³oœæ uzyskanego przez algorytm rozwi¹zania od optimum") +
   xlab("Rozmiar instancji problemu") +
-  ylab("Odlegï¿½oï¿½ï¿½ od optimum") +
+  ylab("Odleg³oœæ od optimum") +
   theme_bw()
 
 ggplot(data_results %>% filter(name == "Random"), aes(x = inst_size, y = min)) +
   geom_point() +
-  ggtitle("Minimalna odlegï¿½oï¿½ï¿½ od optimum - algorytm losowy") +
+  ggtitle("Minimalna odleg³oœæ od optimum - algorytm losowy") +
   xlab("Rozmiar instancji problemu") +
-  ylab("Odlegï¿½oï¿½ï¿½ od optimum") +
+  ylab("Odleg³oœæ od optimum") +
   theme_bw()
 ```
 
-Ze wzglï¿½du na diametralnie gorsze wyniki, dla lepszej czytelnoï¿½ci, wykres algorytmu *Random Search* przedstawiono na odrï¿½bnej skali.
+Ze wzglêdu na diametralnie gorsze wyniki, dla lepszej czytelnoœci, wykres algorytmu *Random Search* przedstawiono na odrêbnej skali.
 
-Zaobserwowaï¿½ moï¿½na wysokï¿½ niestabilnoï¿½ï¿½ uzyskanych wynikï¿½w dla niektï¿½rych instancji problemu (duï¿½e odchylenia standardowe dla kaï¿½dego algorytmu). Moï¿½e to byï¿½ spowodowane skomplikowanï¿½ przestrzeniï¿½ rozwiï¿½zaï¿½. 
+Zaobserwowaæ mo¿na wysok¹ niestabilnoœæ uzyskanych wyników dla niektórych instancji problemu (du¿e odchylenia standardowe dla ka¿dego algorytmu). Mo¿e to byæ spowodowane skomplikowan¹ przestrzeni¹ rozwi¹zañ. 
 
-Metodï¿½ regresji liniowej wyznaczono zaleï¿½noï¿½ci miï¿½dzy wielkoï¿½ciï¿½ instancji, a wzglï¿½dnï¿½ odlegï¿½oï¿½ciï¿½ rozwiï¿½zania od optimum. Wszystkie badane algorytmy zdajï¿½ siï¿½ wykazywaï¿½ niezaleï¿½noï¿½ï¿½ jakoï¿½ci rozwiï¿½zania koï¿½cowego (odlegï¿½oï¿½ci od optimum) od wielkoï¿½ci instancji. Rï¿½ï¿½nice w jakoï¿½ci koï¿½cowego rozwiï¿½zania powodowane sï¿½ raczej rï¿½ï¿½nym stopniem skomplikowania powierzchni rozwiï¿½zaï¿½ dla danych instancji.
+Wszystkie badane algorytmy zdaj¹ siê wykazywaæ niezale¿noœæ jakoœci rozwi¹zania koñcowego (odleg³oœci od optimum) od wielkoœci instancji. Ró¿nice w jakoœci koñcowego rozwi¹zania powodowane s¹ raczej ró¿nym stopniem skomplikowania powierzchni rozwi¹zañ dla danych instancji.
 
-Algorytmy *Greedy* i *Steepest* osiï¿½gajï¿½ bardzo podobne ï¿½rednie rozwiï¿½zania. Zaproponowana heurystyka zwraca nieznacznie gorsze rozwiï¿½zania od algorytmï¿½w przeszukiwania lokalnego, natomiast *Random* osiï¿½ga rozwiï¿½zania daleko gorsze od pozostaï¿½ych (poza prostymi instancjami).
+Algorytmy *Greedy* i *Steepest* osi¹gaj¹ bardzo podobne œrednie rozwi¹zania. Zaproponowana heurystyka zwraca nieznacznie gorsze rozwi¹zania od algorytmów przeszukiwania lokalnego, natomiast *Random* osi¹ga rozwi¹zania daleko gorsze od pozosta³ych (poza prostymi instancjami).
 
-Algorytmy Simulated Annealing (SA) i Tabu Search (TS) wykazujï¿½ wiï¿½kszï¿½ niezaleï¿½noï¿½ï¿½ od stopnia skomplikowania instancji (mniejsze odchylenia od wyliczonej funkcji liniowej), szczegï¿½lnie uwzglï¿½dniajï¿½c rozwiï¿½zanie najlepsze ze znalezionych
+Algorytmy Simulated Annealing (SA) i Tabu Search (TS) wykazuj¹ wiêksz¹ niezale¿noœæ od stopnia skomplikowania instancji (mniejsze odchylenia od wyliczonej funkcji liniowej), szczególnie uwzglêdniaj¹c rozwi¹zanie najlepsze ze znalezionych
 
-## Porï¿½wnanie czasï¿½w wykonywania algorytmï¿½w
+## Porównanie czasów wykonywania algorytmów
 
-Poniewaï¿½ warunkiem stopu algorytmu *Random* jest upï¿½yniï¿½cie okreï¿½lonego czasu (ï¿½redniego czasu wykonywania *Local Search*), jego wykresy zostaï¿½y pominiï¿½te.
+Poniewa¿ warunkiem stopu algorytmu *Random* jest up³yniêcie okreœlonego czasu (œredniego czasu wykonywania *Local Search*), jego wykresy zosta³y pominiête.
 
 ```{r times_compare}
 data_times <- data %>%
@@ -240,9 +241,9 @@ ggplot(data_times, aes(x = inst_size, y = time)) +
   geom_errorbar(aes(ymin = time-se, ymax = time+se), width=.1) +
   geom_point() +
   facet_wrap(~ name, ncol = 2) +
-  ggtitle("ï¿½redni czas dziaï¿½ania algorytmu w milisekundach") +
+  ggtitle("Œredni czas dzia³ania algorytmu w milisekundach") +
   xlab("Rozmiar instancji problemu") +
-  ylab("Czas dziaï¿½ania algorytmu") +
+  ylab("Czas dzia³ania algorytmu") +
   theme_bw()
 ```
 
@@ -250,21 +251,21 @@ ggplot(data_times, aes(x = inst_size, y = time)) +
 ggplot(data_times, aes(x = inst_size, y = min)) +
   geom_point() +
   facet_wrap(~ name, ncol = 2) +
-  ggtitle("Najkrï¿½tszy czas dziaï¿½ania algorytmu w milisekundach") +
+  ggtitle("Najkrótszy czas dzia³ania algorytmu w milisekundach") +
   xlab("Rozmiar instancji problemu") +
-  ylab("Czas dziaï¿½ania algorytmu") +
+  ylab("Czas dzia³ania algorytmu") +
   theme_bw()
 ```
 
-Przedstawione powyï¿½ej wykresy czasu trwania iteracji algorytmï¿½w pokazujï¿½ wielomianowy wzrost czasu trwania algorytmu wraz ze wzrostem wielkoï¿½ci instancji (czego moï¿½na siï¿½ byï¿½o spodziewaï¿½). Dla algorytmï¿½w *SA* i *TS* czas roï¿½nie znacznie szybciej od pozostaï¿½ych (wielomian wyï¿½szego stopnia).
+Przedstawione powy¿ej wykresy czasu trwania iteracji algorytmów pokazuj¹ wielomianowy wzrost czasu trwania algorytmu wraz ze wzrostem wielkoœci instancji (czego mo¿na siê by³o spodziewaæ). Dla algorytmów *SA* i *TS* czas roœnie znacznie szybciej od pozosta³ych (wielomian wy¿szego stopnia).
 
-Wykresy ï¿½redniego czasu dziaï¿½ania pokazujï¿½ rosnï¿½cï¿½ niestabilnoï¿½ï¿½ mierzonego czasu (ktï¿½ra nie jest jednak zaleï¿½na jedynie od wielkoï¿½ci instancji). Najmniejsze odchylenia zanotowano dla algorytmu *Steepest LS*, co byï¿½o do przewidzenia. W kaï¿½dym kroku oceni on takï¿½ samï¿½ liczbï¿½ sï¿½siadï¿½w (co zajmie tyle samo czasu), wiï¿½c czas trwania algorytmu zaleï¿½y wyï¿½ï¿½cznie od liczby wykonanych krokï¿½w. Poniewaï¿½ dla danej instancji wykonuje on zawsze mniej wiï¿½cej tyle samo krokï¿½w (potwierdzajï¿½ to niewielkie odchylenia standardowe na wykresie rozmiar instancji / liczba krokï¿½w), liczba odwiedzonych sï¿½siadï¿½w, a wiï¿½c i czas trwania algorytmu cechujï¿½ siï¿½ wysokï¿½ stabilnoï¿½ciï¿½.
+Wykresy œredniego czasu dzia³ania pokazuj¹ rosn¹c¹ niestabilnoœæ mierzonego czasu (która nie jest jednak zale¿na jedynie od wielkoœci instancji). Najmniejsze odchylenia zanotowano dla algorytmu *Steepest LS*, co by³o do przewidzenia. W ka¿dym kroku oceni on tak¹ sam¹ liczbê s¹siadów (co zajmie tyle samo czasu), wiêc czas trwania algorytmu zale¿y wy³¹cznie od liczby wykonanych kroków. Poniewa¿ dla danej instancji wykonuje on zawsze mniej wiêcej tyle samo kroków (potwierdzaj¹ to niewielkie odchylenia standardowe na wykresie rozmiar instancji / liczba kroków), liczba odwiedzonych s¹siadów, a wiêc i czas trwania algorytmu cechuj¹ siê wysok¹ stabilnoœci¹.
 
-Trudno jednoznacznie okreï¿½liï¿½, ktï¿½ry z algorytmï¿½w przeszukiwania lokalnego dziaï¿½a szybciej. Dla niektï¿½rych instancji krï¿½tszy czas osiï¿½gnï¿½ï¿½ *Steepest*, dla innych *Greedy*. Jest to silnie zwiï¿½zane z ksztaï¿½tem przestrzeni rozwiï¿½zaï¿½, a nie bezpoï¿½rednio z wielkoï¿½ciï¿½ instancji.
+Trudno jednoznacznie okreœliæ, który z algorytmów przeszukiwania lokalnego dzia³a szybciej. Dla niektórych instancji krótszy czas osi¹gn¹³ *Steepest*, dla innych *Greedy*. Jest to silnie zwi¹zane z kszta³tem przestrzeni rozwi¹zañ, a nie bezpoœrednio z wielkoœci¹ instancji.
 
-## Efektywnoï¿½ï¿½ algorytmï¿½w
+## Efektywnoœæ algorytmów
 
-Przeprowadzono analizï¿½ efektywnoï¿½ci algorytmï¿½w. Miarï¿½ efektywnoï¿½ci opracowano wedï¿½ug zaï¿½oï¿½enia, ï¿½e najwyï¿½szï¿½ efektywnoï¿½ï¿½ ma algorytm, ktï¿½ry zwraca rozwiï¿½zanie optymalne w czasie zerowym. Miarï¿½ efektywnoï¿½ci ograniczono do przedziaï¿½u $[0, 1]$ wedï¿½ug poniï¿½szego wzoru:
+Przeprowadzono analizê efektywnoœci algorytmów. Miarê efektywnoœci opracowano wed³ug za³o¿enia, ¿e najwy¿sz¹ efektywnoœæ ma algorytm, który zwraca rozwi¹zanie optymalne w czasie zerowym. Miarê efektywnoœci ograniczono do przedzia³u $[0, 1]$ wed³ug poni¿szego wzoru:
 
 $efectiveness = \frac{1}{(dist + 1) * (time / 60000 + 1)}$
 
@@ -276,24 +277,24 @@ data_ef <- data %>%
 ggplot(data_ef %>% filter(name != "Random"), aes(x = inst_size, y = ef)) +
   geom_point() +
   facet_wrap(~ name, ncol = 2) +
-  ggtitle("ï¿½rednia efektywnoï¿½ï¿½ algorytmu dla danego rozmiaru instancji problemu") +
+  ggtitle("Œrednia efektywnoœæ algorytmu dla danego rozmiaru instancji problemu") +
   xlab("Rozmiar instancji problemu") +
-  ylab("Efektywnoï¿½ï¿½") +
+  ylab("Efektywnoœæ") +
   theme_bw()
 
 ggplot(data_ef %>% filter(name == "Random"), aes(x = inst_size, y = ef)) +
   geom_point() +
-  ggtitle("ï¿½rednia efektywnoï¿½ï¿½ - algorytm losowy") +
+  ggtitle("Œrednia efektywnoœæ - algorytm losowy") +
   xlab("Rozmiar instancji problemu") +
-  ylab("Efektywnoï¿½ï¿½") +
+  ylab("Efektywnoœæ") +
   theme_bw()
 ```
 
-Pierwszï¿½ obserwacjï¿½ jest wyraï¿½nie gorsza efektywnoï¿½ï¿½ algorytmu przeszukiwania losowego. Algorytmy *SA* i *TS*, a szczegï¿½lnie ten pierwszy, wykazujï¿½ wiï¿½kszï¿½ efektywnoï¿½ï¿½ dla wielu instancji testowych niï¿½ przeszukiwanie lokalne, jednak przez szybciej rosnï¿½cy czas, ich efektywnoï¿½ï¿½ spada dla wiï¿½kszych instancji. Algorytm symulowanego wyï¿½arzania cechuje siï¿½ najmniejszï¿½ zmiennoï¿½ciï¿½ efektywnoï¿½ci w zaleï¿½noï¿½ci od instancji problemu (najmniejsze odchylenia od funkcji uzyskanej z regresji liniowej).
+Pierwsz¹ obserwacj¹ jest wyraŸnie gorsza efektywnoœæ algorytmu przeszukiwania losowego. Algorytmy *SA* i *TS*, a szczególnie ten pierwszy, wykazuj¹ wiêksz¹ efektywnoœæ dla wielu instancji testowych ni¿ przeszukiwanie lokalne, jednak przez szybciej rosn¹cy czas, ich efektywnoœæ spada dla wiêkszych instancji. Algorytm symulowanego wy¿arzania cechuje siê najmniejsz¹ zmiennoœci¹ efektywnoœci w zale¿noœci od instancji problemu (najmniejsze odchylenia od funkcji uzyskanej z regresji liniowej).
 
-## Zaleï¿½noï¿½ï¿½ jakoï¿½ci rozwiï¿½zania koï¿½cowego od jakoï¿½ci rozwiï¿½zania poczï¿½tkowego (algorytmy przeszukiwania lokalnego)
+## Zale¿noœæ jakoœci rozwi¹zania koñcowego od jakoœci rozwi¹zania pocz¹tkowego (algorytmy przeszukiwania lokalnego)
 
-Przeprowadzono eksperyment porï¿½wnujï¿½cy jakoï¿½ï¿½ rozwiï¿½zania poczï¿½tkowego z jakoï¿½ciï¿½ rozwiï¿½zania koï¿½cowego w algorytmach przeszukiwania lokalnego. Wyniki zilustrowano poniï¿½szymi wykresami.
+Przeprowadzono eksperyment porównuj¹cy jakoœæ rozwi¹zania pocz¹tkowego z jakoœci¹ rozwi¹zania koñcowego w algorytmach przeszukiwania lokalnego. Wyniki zilustrowano poni¿szymi wykresami.
 
 ```{r init_result_relation}
 data_init_result = read.csv2("gs_init_result.csv", col.names = c("name", "inst_name", "result", "init_result"), dec = ".")
@@ -306,21 +307,21 @@ for (i_name in unique(data_init_result$inst_name)) {
     geom_point() +
     facet_grid(name ~ .) +
     ggtitle(i_name) +
-    xlab("Jakoï¿½ï¿½ rozwiï¿½zania poczï¿½tkowego") +
-    ylab("Jakoï¿½ï¿½ rozwiï¿½zania koï¿½cowego") +
+    xlab("Jakoœæ rozwi¹zania pocz¹tkowego") +
+    ylab("Jakoœæ rozwi¹zania koñcowego") +
     theme_bw()
   )
 }
   
 ```
 
-Z powyï¿½szych wykresï¿½w wynika, ï¿½e nie istnieje wyraï¿½na zaleï¿½noï¿½ï¿½ miï¿½dzy jakoï¿½ciï¿½ rozwiï¿½zania poczï¿½tkowego, a koï¿½cowego. Pokazujï¿½ one natomiast charakter badanych instancji problemu, w ktï¿½rych okreï¿½lone rozwiï¿½zania wystï¿½pujï¿½ czï¿½ï¿½ciej od innych (poziome "linie" na wykresach).
+Z powy¿szych wykresów wynika, ¿e nie istnieje wyraŸna zale¿noœæ miêdzy jakoœci¹ rozwi¹zania pocz¹tkowego, a koñcowego. Pokazuj¹ one natomiast charakter badanych instancji problemu, w których okreœlone rozwi¹zania wystêpuj¹ czêœciej od innych (poziome "linie" na wykresach).
 
-Brak zaleï¿½noï¿½ci miï¿½dzy jakoï¿½ciï¿½ poczï¿½tkowego i koï¿½cowego rozwiï¿½zania wynika ze zï¿½oï¿½onego ksztaï¿½tu powierzchni rozwiï¿½zaï¿½. Algorytmy przeszukiwania lokalnego znajdujï¿½ lokalne optimum, a nie mamy ï¿½adnej gwarancji, ï¿½e w okolicach dobrego rozwiï¿½zania bï¿½dzie dobre optimum lokalne. Jedynï¿½ gwarancjï¿½ danï¿½ nam przez algorytmy przeszukiwania lokalnego jest fakt, ï¿½e rozwiï¿½zanie koï¿½cowe bï¿½dzie zawsze nie gorsze od poczï¿½tkowego.
+Brak zale¿noœci miêdzy jakoœci¹ pocz¹tkowego i koñcowego rozwi¹zania wynika ze z³o¿onego kszta³tu powierzchni rozwi¹zañ. Algorytmy przeszukiwania lokalnego znajduj¹ lokalne optimum, a nie mamy ¿adnej gwarancji, ¿e w okolicach dobrego rozwi¹zania bêdzie dobre optimum lokalne. Jedyn¹ gwarancj¹ dan¹ nam przez algorytmy przeszukiwania lokalnego jest fakt, ¿e rozwi¹zanie koñcowe bêdzie zawsze nie gorsze od pocz¹tkowego.
 
-## Multi-random local search: Zaleï¿½noï¿½ï¿½ uzyskanego rozwiï¿½zania od liczby restartï¿½w
+## Multi-random local search: Zale¿noœæ uzyskanego rozwi¹zania od liczby restartów
 
-Dla dwï¿½ch algorytmï¿½w przeszukiwania lokalnego (*Greedy* i *Steepest*) przeprowadzono eksperyment sprawdzajï¿½cy zaleï¿½noï¿½ï¿½ jakoï¿½ci uzyskanego rozwiï¿½zania od iloï¿½ci restartï¿½w (ponownych przeszukiwaï¿½ lokalnych zaczynajï¿½cych od losowo wybranych punktï¿½w poczï¿½tkowych). Wyniki przedstawiono na poniï¿½szych wykresach.
+Dla dwóch algorytmów przeszukiwania lokalnego (*Greedy* i *Steepest*) przeprowadzono eksperyment sprawdzaj¹cy zale¿noœæ jakoœci uzyskanego rozwi¹zania od iloœci restartów (ponownych przeszukiwañ lokalnych zaczynaj¹cych od losowo wybranych punktów pocz¹tkowych). Wyniki przedstawiono na poni¿szych wykresach.
 
 ```{r multi_random}
 data_multi_random = read.csv2("multi_random.csv", col.names = c("name", "inst_name", "result", "result_type", "iter_count"), dec = ".")
@@ -332,17 +333,17 @@ for (i_name in unique(data_multi_random$inst_name)) {
   print(ggplot(instance_data, aes(x = iter_count, y = result, colour = result_type)) +
     geom_line() +
     facet_grid(name ~ .) +
-    labs(title = i_name, x = "Liczba iteracji", y = "Jakoï¿½ï¿½ zwrï¿½conego rozwiï¿½zania", color = "Rodzaj wyniku") +
+    labs(title = i_name, x = "Liczba iteracji", y = "Jakoœæ zwróconego rozwi¹zania", color = "Rodzaj wyniku") +
     theme_bw()
   )
 }
 ```
 
-Zamieszczone wykresy pokazujï¿½, ï¿½e algorytmy stosunkowo szybko (juï¿½ po 2 -- 3 iteracjach) osiï¿½gajï¿½ rozwiï¿½zanie bliskie koï¿½cowemu (gdzie za koï¿½cowe  uznajemy takie, ktï¿½re nie zmienia siï¿½ przez kilkadziesiï¿½t iteracji). Dalsze iteracje pomagajï¿½ natomiast w coraz wolniejszym tempie poprawiaï¿½ uzyskane rozwiï¿½zanie. Algorytm *Steepest* szybciej osiï¿½ga koï¿½cowe rozwiï¿½zanie. Sugeruje to, ï¿½e efektywniej eksploruje on przestrzeï¿½. Wybieranie za kaï¿½dym razem najlepszego sï¿½siada moï¿½e wiï¿½c prowadziï¿½ do wiï¿½kszej rï¿½ï¿½norodnoï¿½ci znajdowanych optimï¿½w lokalnych po wielokrotnym uruchomieniu algorytmu. Wiï¿½cej znalezionych optimï¿½w lokalnych zwiï¿½ksza natomiast prawdopodobieï¿½stwo znalezienia optimum globalnego.
+Zamieszczone wykresy pokazuj¹, ¿e algorytmy stosunkowo szybko (ju¿ po 2 -- 3 iteracjach) osi¹gaj¹ rozwi¹zanie bliskie koñcowemu (gdzie za koñcowe  uznajemy takie, które nie zmienia siê przez kilkadziesi¹t iteracji). Dalsze iteracje pomagaj¹ natomiast w coraz wolniejszym tempie poprawiaæ uzyskane rozwi¹zanie. Algorytm *Steepest* szybciej osi¹ga koñcowe rozwi¹zanie. Sugeruje to, ¿e efektywniej eksploruje on przestrzeñ. Wybieranie za ka¿dym razem najlepszego s¹siada mo¿e wiêc prowadziæ do wiêkszej ró¿norodnoœci znajdowanych optimów lokalnych po wielokrotnym uruchomieniu algorytmu. Wiêcej znalezionych optimów lokalnych zwiêksza natomiast prawdopodobieñstwo znalezienia optimum globalnego.
 
-## Ocena podobieï¿½stwa znajdywanych rozwiï¿½zaï¿½ lokalnie optymalnych
+## Ocena podobieñstwa znajdywanych rozwi¹zañ lokalnie optymalnych
 
-Okreï¿½lono podobieï¿½stwo miï¿½dzy rozwiï¿½zaniami znalezionymi przez algorytmy przeszukiwania lokalnego. Podobieï¿½stwo zostaï¿½o zdefiniowane, jako liczba pozycji, na ktï¿½rych rozwiï¿½zania majï¿½ rï¿½wne wartoï¿½ci. Przykï¿½adowo:
+Okreœlono podobieñstwo miêdzy rozwi¹zaniami znalezionymi przez algorytmy przeszukiwania lokalnego. Podobieñstwo zosta³o zdefiniowane, jako liczba pozycji, na których rozwi¹zania maj¹ równe wartoœci. Przyk³adowo:
 
 ```{r results_similarity}
 data_results_similarity <- read.csv2("results_similarity.csv", col.names = c("perm1", "perm2", "similarity", "score1", "score2", "inst_name"), dec = ".") %>%
@@ -352,10 +353,10 @@ data_table <- data_results_similarity %>%
   select(perm1, perm2, similarity) %>%
   top_n(5)
 
-kable(data_table, col.names = c("Permutacja 1", "Permutacja 2", "Podobieï¿½stwo"))
+kable(data_table, col.names = c("Permutacja 1", "Permutacja 2", "Podobieñstwo"))
 ```
 
-Sporzï¿½dzono wykresy prï¿½bujï¿½c zbadaï¿½ zaleï¿½noï¿½ï¿½ miï¿½dzy podobieï¿½stwem, a rï¿½ï¿½nicï¿½ w jakoï¿½ci dla par rozwiï¿½zaï¿½. Badanie przeprowadzono na dwï¿½ch niewielkich instancjach.
+Sporz¹dzono wykresy próbuj¹c zbadaæ zale¿noœæ miêdzy podobieñstwem, a ró¿nic¹ w jakoœci dla par rozwi¹zañ. Badanie przeprowadzono na dwóch niewielkich instancjach.
 
 ```{r results_similarity_graphs}
 for (i_name in unique(data_results_similarity$inst_name)) {
@@ -365,34 +366,40 @@ for (i_name in unique(data_results_similarity$inst_name)) {
   print(ggplot(instance_data, aes(x = similarity, y = score_dif)) +
     geom_point() +
     ggtitle(i_name) +
-    xlab("Podobieï¿½stwo rozwiï¿½zaï¿½") +
-    ylab("Rï¿½ï¿½nica jakoï¿½ci rozwiï¿½zaï¿½") +
+    xlab("Podobieñstwo rozwi¹zañ") +
+    ylab("Ró¿nica jakoœci rozwi¹zañ") +
     theme_bw()
   )
 }
 ```
 
-Wykres dla pierwszej z badanych instancji przedstawia relacjï¿½ malejï¿½cï¿½ (im bardziej podobne rozwiï¿½zania, tym mniejsza rï¿½ï¿½nica w ich jakoï¿½ci), podczas, gdy drugi nie przejawia wyraï¿½nej relacji omawianych wielkoï¿½ci. Rozwiï¿½zania znalezione dla drugiej instancji sï¿½ rï¿½wnieï¿½ mniej podobne do siebie wzajemnie -- dla instancji problemu *had12* pary rozwiï¿½zaï¿½ majï¿½ podobieï¿½stwo siï¿½gajï¿½ce nawet 10 (na maksimum 12), natomiast dla *nug14* najwyï¿½sze podobieï¿½stwo wyniosï¿½o 6/14.
+Dla obu instancji problemu zaobserwowano zale¿noœæ miêdzy podobieñstwem rozwi¹zañ, a ró¿nic¹ ich jakoœci. Dla rozwi¹zañ ró¿ni¹cych siê znacznie od siebie, ró¿nica jakoœci wydaje siê byæ losowa (wystêpuj¹ zarówno pary o podobnej jakoœci, jak i bardzo odleg³e od siebie). Natomiast rozwi¹zania podobne do siebie czêœciej maj¹ niewielk¹ róŸnicê jakoœci.
 
 ## Wnioski
 
-W ramach zadania zaimplementowano i przetestowano 4 algorytmy rozwiï¿½zujï¿½ce problem QAP: *Random Search*, *Greedy Local Search*, *Steepest Local Search* oraz autorski algorytm heurystyczny. Do przeszukiwania przestrzeni rozwiï¿½zaï¿½ skorzystano z sï¿½siedztwa 2-OPT, ktï¿½re dla kaï¿½dego rozwiï¿½zania zwraca n<sup>2</sup> jego sï¿½siadï¿½w. 
+W ramach zadania zaimplementowano i przetestowano 6 algorytmów rozwi¹zuj¹cych problem QAP: *Random Search*, *Greedy Local Search*, *Steepest Local Search*, *Simulated Annealing*, *Tabu Search* oraz autorski algorytm heurystyczny. Do przeszukiwania przestrzeni rozwi¹zañ skorzystano z s¹siedztwa 2-OPT, które dla ka¿dego rozwi¹zania zwraca n<sup>2</sup> jego s¹siadów. 
 
-W pierwszej kolejnoï¿½ci porï¿½wnano liczbï¿½ wykonanych krokï¿½w oraz sprawdzonych sï¿½siadï¿½w przez algorytmy *Greedy LS* i *Steepest LS*. Okazaï¿½o siï¿½, ï¿½e jakkolwiek *Steepest* wykonuje znacznie mniej krokï¿½w dla kaï¿½dej badanej instancji, liczba sprawdzonych przez niego sï¿½siadï¿½w w peï¿½nej iteracji jest zazwyczaj wyï¿½sza od "konkurenta".
+W pierwszej kolejnoœci porównano liczbê wykonanych kroków oraz sprawdzonych s¹siadów przez algorytmy *Greedy LS* i *Steepest LS*. Okaza³o siê, ¿e jakkolwiek *Steepest* wykonuje znacznie mniej kroków dla ka¿dej badanej instancji, liczba sprawdzonych przez niego s¹siadów w pe³nej iteracji jest zazwyczaj wy¿sza od "konkurenta".
 
-Wzglï¿½dna odlegï¿½oï¿½ï¿½ znalezionego rozwiï¿½zania od optimum globalnego jest niezaleï¿½na od wielkoï¿½ci instancji, a dla algorytmu *Random Search* jest ona nawet tym mniejsza, im wiï¿½ksza jest instancja problemu. Jest to jednak w duï¿½ej mierze znacznym wydï¿½uï¿½eniem czasu dziaï¿½ania RS dla wiï¿½kszych instancji.
+Wzglêdna odleg³oœæ znalezionego rozwi¹zania od optimum globalnego jest niezale¿na od wielkoœci instancji. Ró¿nice w jakoœci rozwi¹zania wynikaj¹ raczej z "trudnoœci" instancji problemu - stopnia skomplikowania przestrzeni rozwi¹zañ.
 
-Czas wykonywania algorytmï¿½w roï¿½nie wraz ze wzrostem wielkoï¿½ci instancji. Jest to spodziewany wniosek, jednak naleï¿½y zauwaï¿½yï¿½, ï¿½e od tej reguï¿½y sï¿½ wyjï¿½tki i dï¿½ugoï¿½ï¿½ permutacji nie jest jedynym kryterium determinujï¿½cym czas wykonywania algorytmu. Najbardziej stabilny czas wykonywania wykazuje *Steepest Local Search*, co jest zrozumiaï¿½e biorï¿½c pod uwagï¿½, ï¿½e w kaï¿½dym kroku przeszukuje caï¿½e dostï¿½pne sï¿½siedztwo (ktï¿½re ma rï¿½wnï¿½ licznoï¿½ï¿½ w kaï¿½dym punkcie przestrzeni rozwiï¿½zaï¿½).
+Czas wykonywania algorytmów roœnie wraz ze wzrostem wielkoœci instancji. Jest to spodziewany wniosek, jednak nale¿y zauwa¿yæ, ¿e od tej regu³y s¹ wyj¹tki i d³ugoœæ permutacji nie jest jedynym kryterium determinuj¹cym czas wykonywania algorytmu. Czas wykonywania algorytmu dla wszystkich testowanych algorytmów zdaje siê rosn¹æ wielomianowo, jednak znacznie szybciej dla algorytmów *Simulated Annealing* i *Tabu Search* (wy¿szy stopieñ wielomianu).
 
-Porï¿½wnanie czasu wykonywania algorytmï¿½w *Greedy* i *Steepest* prowadzi do wniosku, ï¿½e ï¿½aden z nich nie jest jednoznacznie lepszy od drugiego. Zawsze znajdzie siï¿½ instancja, dla ktï¿½rej *Greedy* zakoï¿½czy siï¿½ szybciej oraz taka, dla ktï¿½rej to *Steepest* osiï¿½gnie lepszy czas.
+Najbardziej stabilny czas wykonywania wykazuje *Steepest Local Search*, co jest zrozumia³e bior¹c pod uwagê, ¿e w ka¿dym kroku przeszukuje ca³e dostêpne s¹siedztwo (które ma równ¹ licznoœæ w ka¿dym punkcie przestrzeni rozwi¹zañ).
 
-Nie moï¿½na wskazaï¿½ wyraï¿½nej zaleï¿½noï¿½ci miï¿½dzy jakoï¿½ciï¿½ rozwiï¿½zania poczï¿½tkowego, a koï¿½cowego w algorytmach przeszukiwania lokalnego. Jedynï¿½ pewnï¿½ zaleï¿½noï¿½ciï¿½ jest, ï¿½e zwrï¿½cone rozwiï¿½zanie bï¿½dzie siï¿½ charakteryzowaï¿½o jakoï¿½ciï¿½ nie gorszï¿½ od poczï¿½tkowego.
+TODO: Opisaæ niestabilnoœæ czasu wykonywania *SA* i *TS*.
 
-*Multi-random Local Search* (wielokrotne uruchamianie przeszukiwania lokalnego w losowych punktach) stanowi bardzo sprawne ulepszenie algorytmï¿½w LS. Z przeprowadzonych eksperymentï¿½w wynika, ï¿½e dobre rozwiï¿½zanie osiï¿½gane jest stosunkowo szybko. Wielokrotne uruchamianie *LS* pozwala na znalezienie wiï¿½kszej liczby optimï¿½w lokalnych, a w konsekwencji zwiï¿½ksza szansï¿½ znalezienia rozwiï¿½zania optymalnego globalnie.
+Porównanie czasu wykonywania algorytmów *Greedy* i *Steepest* prowadzi do wniosku, ¿e ¿aden z nich nie jest jednoznacznie lepszy od drugiego. Zawsze znajdzie siê instancja, dla której *Greedy* zakoñczy siê szybciej oraz taka, dla której to *Steepest* osi¹gnie lepszy czas.
 
-Na koniec oceniono podobieï¿½stwo znajdowanych przez *LS* rozwiï¿½zaï¿½ oraz podjï¿½to prï¿½bï¿½ znalezienia relacji miï¿½dzy podobieï¿½stwem rozwiï¿½zaï¿½, a rï¿½ï¿½nicï¿½ ich jakoï¿½ci. Wykorzystano miarï¿½ rï¿½wnï¿½ liczbie pozycji, na ktï¿½rych permutacje majï¿½ rï¿½wne wartoï¿½ci. Zauwaï¿½ono, ï¿½e dla niektï¿½rych instancji moï¿½e wystï¿½powaï¿½ wyraï¿½na zaleï¿½noï¿½ï¿½ miï¿½dzy podobieï¿½stwem rozwiï¿½zaï¿½, a rï¿½ï¿½nicï¿½ ich jakoï¿½ci.
+Zaproponowano miarê efektywnoœci iteracji algorytmów. Uzale¿niono j¹ od czasu trwania iteracji i jakoœci znalezionego rozwi¹zania (odleg³oœci od rozwi¹zania optymalnego). Uzyskane wyniki pokazuj¹ lepsze wyniki algorytmów *SA* i *TS*, jednak dla du¿ych instancji problemu, znaczny czas wykonywania prowadzi do niskiej oceny efektywnoœci.
 
-## Napotkane trudnoï¿½ci
+Nie mo¿na wskazaæ wyra¿nej zale¿noœci miêdzy jakoœci¹ rozwi¹zania pocz¹tkowego, a koñcowego w algorytmach przeszukiwania lokalnego. Jedyn¹ pewn¹ zale¿noœci¹ jest, ¿e zwrócone rozwi¹zanie bêdzie siê charakteryzowa³o jakoœci¹ nie gorsz¹ od pocz¹tkowego.
 
-Przy wykonywaniu zadania nie natrafiono na ï¿½adne istotne trudnoï¿½ci.
+*Multi-random Local Search* (wielokrotne uruchamianie przeszukiwania lokalnego w losowych punktach) stanowi bardzo sprawne ulepszenie algorytmów LS. Z przeprowadzonych eksperymentów wynika, ¿e dobre rozwi¹zanie osi¹gane jest stosunkowo szybko. Wielokrotne uruchamianie *LS* pozwala na znalezienie wiêkszej liczby optimów lokalnych, a w konsekwencji zwiêksza szansê znalezienia rozwi¹zania optymalnego globalnie.
+
+Na koniec oceniono podobieñstwo znajdowanych przez *LS* rozwi¹zañ oraz podjêto próbê znalezienia relacji miêdzy podobieñstwem rozwi¹zañ, a ró¿nic¹ ich jakoœci. Wykorzystano miarê równ¹ liczbie pozycji, na których permutacje maj¹ równe wartoœci. Zauwa¿ono, ¿e dla niektórych instancji mo¿e wystêpowaæ wyraŸna zale¿noœæ miêdzy podobieñstwem rozwi¹zañ, a ró¿nic¹ ich jakoœci.
+
+## Napotkane trudnoœci
+
+Przy wykonywaniu zadania nie natrafiono na ¿adne istotne trudnoœci.
 
