@@ -105,7 +105,9 @@ Algorytmy Simulated Annealing (SA) i Tabu Search (TS) wykazują większą niezal
 
 Ponieważ warunkiem stopu algorytmu *Random* jest upłynięcie określonego czasu (średniego czasu wykonywania *Local Search*), jego wykresy zostały pominięte.
 
-![](sprawozdanie_files/figure-html/times_compare-1.png)<!-- -->
+W celu lepszej czytelności, odchylenia standardowe czasów wykonania zostały dodatkowo przedstawione na osobnym wykresie.
+
+![](sprawozdanie_files/figure-html/times_compare-1.png)<!-- -->![](sprawozdanie_files/figure-html/times_compare-2.png)<!-- -->
 
 ![](sprawozdanie_files/figure-html/best_times_compare-1.png)<!-- -->
 
@@ -148,13 +150,15 @@ Zamieszczone wykresy pokazują, że algorytmy stosunkowo szybko (już po 2 -- 3 
 Określono podobieństwo między rozwiązaniami znalezionymi przez algorytmy przeszukiwania lokalnego. Podobieństwo zostało zdefiniowane, jako liczba pozycji, na których rozwiązania mają równe wartości. Przykładowo:
 
 
-Permutacja 1                Permutacja 2                 Podobieństwo
---------------------------  --------------------------  -------------
-2 1 4 5 11 10 6 0 9 7 3 8   2 9 4 1 11 10 6 0 7 5 3 8               8
-8 3 4 0 6 11 1 5 2 9 10 7   8 3 4 0 1 5 11 9 2 6 10 7               7
-7 9 1 10 11 6 4 0 2 5 3 8   2 9 4 1 11 10 6 0 7 5 3 8               6
-7 9 1 10 11 6 4 0 2 5 3 8   7 9 1 10 11 4 6 5 2 0 3 8               8
-7 9 1 10 11 4 6 5 2 0 3 8   7 2 6 9 11 4 10 5 1 0 3 8               7
+Permutacja 1                      Permutacja 2                       Podobieństwo
+--------------------------------  --------------------------------  -------------
+2 9 10 1 11 4 5 6 7 0 3 8         2 9 4 1 11 10 6 0 7 5 3 8                     7
+2 9 10 1 11 4 5 6 7 0 3 8         2 9 4 1 11 10 6 0 7 5 3 8                     7
+2 9 10 1 11 4 5 6 7 0 3 8         7 10 9 11 1 4 5 6 2 0 3 8                     6
+8 3 6 0 5 10 4 1 7 11 9 2         8 3 0 5 10 6 4 9 7 11 1 2                     6
+2 9 4 1 11 10 6 0 7 5 3 8         2 9 4 1 11 10 6 0 7 5 3 8                    12
+8 3 0 6 10 5 11 4 7 1 9 2         8 3 0 5 10 6 4 9 7 11 1 2                     6
+5 13 4 6 11 1 12 8 7 10 0 3 2 9   5 13 4 7 9 1 12 8 10 11 0 3 2 6               9
 
 Sporządzono wykresy próbując zbadać zależność między podobieństwem, a różnicą w jakości dla par rozwiązań. Badanie przeprowadzono na dwóch niewielkich instancjach.
 
@@ -174,7 +178,7 @@ Czas wykonywania algorytmów rośnie wraz ze wzrostem wielkości instancji. Jest
 
 Najbardziej stabilny czas wykonywania wykazuje *Steepest Local Search*, co jest zrozumiałe biorąc pod uwagę, że w każdym kroku przeszukuje całe dostępne sąsiedztwo (które ma równą liczność w każdym punkcie przestrzeni rozwiązań).
 
-TODO: Opisać niestabilność czasu wykonywania *SA* i *TS*.
+Algorytmy symulowanego wyżarzania i wyszukiwania tabu charakteryzują się dużo mniejszą stabilnością czasu wykonania. Jest to prawdopodobnie spowodowane możliwością przechodzenia do sąsiadów pogarszających wynik, przez co w bardziej losowy sposób przeszukiwany jest obszar rozwiązań i w niektórych przypadkach program szybciej się zatrzymuje w optimum lokalnym, a w niektórych później.
 
 Porównanie czasu wykonywania algorytmów *Greedy* i *Steepest* prowadzi do wniosku, że żaden z nich nie jest jednoznacznie lepszy od drugiego. Zawsze znajdzie się instancja, dla której *Greedy* zakończy się szybciej oraz taka, dla której to *Steepest* osiągnie lepszy czas.
 

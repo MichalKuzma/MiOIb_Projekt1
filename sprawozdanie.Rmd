@@ -232,6 +232,8 @@ Algorytmy Simulated Annealing (SA) i Tabu Search (TS) wykazuj¹ wiêksz¹ niezale¿n
 
 Poniewa¿ warunkiem stopu algorytmu *Random* jest up³yniêcie okreœlonego czasu (œredniego czasu wykonywania *Local Search*), jego wykresy zosta³y pominiête.
 
+W celu lepszej czytelnoœci, odchylenia standardowe czasów wykonania zosta³y dodatkowo przedstawione na osobnym wykresie.
+
 ```{r times_compare}
 data_times <- data %>%
   filter(name != "Random", inst_size < 100) %>%
@@ -245,6 +247,15 @@ ggplot(data_times, aes(x = inst_size, y = time)) +
   xlab("Rozmiar instancji problemu") +
   ylab("Czas dzia³ania algorytmu") +
   theme_bw()
+
+ggplot(data_times, aes(x = inst_size, y = time)) +
+  geom_errorbar(aes(ymin = time-se, ymax = time+se), width=.1) +
+  facet_wrap(~ name, ncol = 2) +
+  ggtitle("Odchylenia standardowe czasów dzia³ania algorytmu w milisekundach") +
+  xlab("Rozmiar instancji problemu") +
+  ylab("Czas dzia³ania algorytmu") +
+  theme_bw()
+
 ```
 
 ```{r best_times_compare}
