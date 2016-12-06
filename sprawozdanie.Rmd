@@ -387,7 +387,7 @@ Czas wykonywania algorytmów roœnie wraz ze wzrostem wielkoœci instancji. Jest to
 
 Najbardziej stabilny czas wykonywania wykazuje *Steepest Local Search*, co jest zrozumia³e bior¹c pod uwagê, ¿e w ka¿dym kroku przeszukuje ca³e dostêpne s¹siedztwo (które ma równ¹ licznoœæ w ka¿dym punkcie przestrzeni rozwi¹zañ).
 
-TODO: Opisaæ niestabilnoœæ czasu wykonywania *SA* i *TS*.
+Algorytmy symulowanego wy¿arzania i wyszukiwania tabu charakteryzuj¹ siê du¿o mniejsz¹ stabilnoœci¹ czasu wykonania. Jest to prawdopodobnie spowodowane mo¿liwoœci¹ przechodzenia do s¹siadów pogarszaj¹cych wynik, przez co w bardziej losowy sposób przeszukiwany jest obszar rozwi¹zañ i w niektórych przypadkach program szybciej siê zatrzymuje w optimum lokalnym, a w niektórych póŸniej.
 
 Porównanie czasu wykonywania algorytmów *Greedy* i *Steepest* prowadzi do wniosku, ¿e ¿aden z nich nie jest jednoznacznie lepszy od drugiego. Zawsze znajdzie siê instancja, dla której *Greedy* zakoñczy siê szybciej oraz taka, dla której to *Steepest* osi¹gnie lepszy czas.
 
