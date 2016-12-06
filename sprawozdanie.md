@@ -45,7 +45,8 @@ Powyższe wykresy pokazują, że w pełnej iteracji *Steepest* wykonuje znacznie
 
 ### Heurystyka
 
-Algorytm heurystyczny buduje rozwiązanie w oparciu o predefiniowane reguły, które zgodnie z założeniem mają prowadzić do dobrego wyniku. Zapproponowana w projekcie heurystyka działa analogicznie do sortowania bąbelkowego. Po wylosowaniu permutacji startowej wybierany jest najkorzystniejszy w obecnym krajobrazie element na kolejne pozycje (0, 1, 2, ...).
+Algorytm heurystyczny buduje rozwiązanie w oparciu o predefiniowane reguły, które zgodnie z założeniem mają prowadzić do dobrego wyniku.Zaproponowana w projekcie heurystyka działa na bardzo naiwnym założeniu, że każdy element w permutacji ma swoją jedną, najbardziej optymalną pozycję (w tej permutacji), i zawsze przesuwając ten element bliżej tego miejsca zwiększamy wartość funkcji celu (zmniejszamy koszta). W takim przypadku problem ten sprowadza się do problemu sortowania. Heurystyka rozwiązuje to dalej stosując podejście analogiczne, jak algorytm sortowania bąbelkowego, dzięki czemu złożoność obliczeniowa wynosi O(n<sup>2</sup>), gdzie n to rozmiar permutacji.
+Początkowa permutacja jest tworzona w sposób losowy, dzięki czemu heurystyka może każdorazowo dla jednej instancji problemu zwracać różne wyniki.
 
 ```
   solution = randomSolution()
@@ -62,6 +63,14 @@ Algorytm heurystyczny buduje rozwiązanie w oparciu o predefiniowane reguły, kt
   }
 ```
 
+### Simulated Annealing
+
+TODO: Describe
+
+### Tabu Search
+
+TODO: Describe
+
 ## Porównanie odległości od optimum rozwiązań uzyskanych przez badane algorytmy
 
 Do określenia odległości od optimum globalnego wykorzystano miarę opisaną wzorem:
@@ -74,11 +83,15 @@ Dla każdej badanej instancji wykonano 10 pomiarów. Porównano wyniki średnie 
 
 ![](sprawozdanie_files/figure-html/best_results_compare-1.png)<!-- -->![](sprawozdanie_files/figure-html/best_results_compare-2.png)<!-- -->
 
+Ze względu na diametralnie gorsze wyniki, dla lepszej czytelności, wykres algorytmu *Random Search* przedstawiono na odrębnej skali.
+
 Zaobserwować można wysoką niestabilność uzyskanych wyników dla niektórych instancji problemu (duże odchylenia standardowe dla każdego algorytmu). Może to być spowodowane skomplikowaną przestrzenią rozwiązań. 
 
-Metodą regresji liniowej wyznaczono zależności między wielkością instancji, a względną odległością rozwiązania od optimum. Poza algorytmem losowym żaden nie wykazuje wyraźnej zależności pomiędzy wielkością instancji, a odległością znalezionego rozwiązania od optimum. Random wraz ze wzrostem wielkości instancji zwraca rozwiązania coraz bliższe optymalnemu. Jest to związane ze znacznie dłużczym czasem wykonywania algorytmu (takim, jak dla przeszukiwania lokalnego na danej instancji).
+Metodą regresji liniowej wyznaczono zależności między wielkością instancji, a względną odległością rozwiązania od optimum. Wszystkie badane algorytmy zdają się wykazywać niezależność jakości rozwiązania końcowego (odległości od optimum) od wielkości instancji. Różnice w jakości końcowego rozwiązania powodowane są raczej różnym stopniem skomplikowania powierzchni rozwiązań dla danych instancji.
 
 Algorytmy *Greedy* i *Steepest* osiągają bardzo podobne średnie rozwiązania. Zaproponowana heurystyka zwraca nieznacznie gorsze rozwiązania od algorytmów przeszukiwania lokalnego, natomiast *Random* osiąga rozwiązania daleko gorsze od pozostałych (poza prostymi instancjami).
+
+Algorytmy Simulated Annealing (SA) i Tabu Search (TS) wykazują większą niezależność od stopnia skomplikowania instancji (mniejsze odchylenia od wyliczonej funkcji liniowej), szczególnie uwzględniając rozwiązanie najlepsze ze znalezionych
 
 ## Porównanie czasów wykonywania algorytmów
 
@@ -88,7 +101,7 @@ Ponieważ warunkiem stopu algorytmu *Random* jest upłynięcie określonego czas
 
 ![](sprawozdanie_files/figure-html/best_times_compare-1.png)<!-- -->
 
-Przedstawione powyżej wykresy czasu trwania iteracji algorytmów pokazują wzrost czasu trwania algorytmu wraz ze wzrostem wielkości instancji (czego można się było spodziewać). 
+Przedstawione powyżej wykresy czasu trwania iteracji algorytmów pokazują wielomianowy wzrost czasu trwania algorytmu wraz ze wzrostem wielkości instancji (czego można się było spodziewać). Dla algorytmów *SA* i *TS* czas rośnie znacznie szybciej od pozostałych (wielomian wyższego stopnia).
 
 Wykresy średniego czasu działania pokazują rosnącą niestabilność mierzonego czasu (która nie jest jednak zależna jedynie od wielkości instancji). Najmniejsze odchylenia zanotowano dla algorytmu *Steepest LS*, co było do przewidzenia. W każdym kroku oceni on taką samą liczbę sąsiadów (co zajmie tyle samo czasu), więc czas trwania algorytmu zależy wyłącznie od liczby wykonanych kroków. Ponieważ dla danej instancji wykonuje on zawsze mniej więcej tyle samo kroków (potwierdzają to niewielkie odchylenia standardowe na wykresie rozmiar instancji / liczba kroków), liczba odwiedzonych sąsiadów, a więc i czas trwania algorytmu cechują się wysoką stabilnością.
 
@@ -98,11 +111,11 @@ Trudno jednoznacznie określić, który z algorytmów przeszukiwania lokalnego d
 
 Przeprowadzono analizę efektywności algorytmów. Miarę efektywności opracowano według założenia, że najwyższą efektywność ma algorytm, który zwraca rozwiązanie optymalne w czasie zerowym. Miarę efektywności ograniczono do przedziału $[0, 1]$ według poniższego wzoru:
 
-$efectiveness = \frac{1 + dist + time}{(dist + 1) * (time + 1)}$
+$efectiveness = \frac{1}{(dist + 1) * (time / 60000 + 1)}$
 
 ![](sprawozdanie_files/figure-html/efectiveness_compare-1.png)<!-- -->![](sprawozdanie_files/figure-html/efectiveness_compare-2.png)<!-- -->
 
-pierwszą obserwacją jest wyraźnie gorsza efektywność algorytmu przeszukiwania losowego. Algorytmy *Symulowane wyżarzanie* i *Tabu Search*, a szczególnie ten pierwszy, wykazują większą efektywność dla wielu instancji testowych, niż przeszukiwanie lokalne. Algorytm symulowanego wyżarzania cechuje się najmniejszą zmiennością efektywności w zależności od instancji problemu (najmniejsze odchylenia od funkcji uzyskanej z regresji liniowej).
+Pierwszą obserwacją jest wyraźnie gorsza efektywność algorytmu przeszukiwania losowego. Algorytmy *SA* i *TS*, a szczególnie ten pierwszy, wykazują większą efektywność dla wielu instancji testowych niż przeszukiwanie lokalne, jednak przez szybciej rosnący czas, ich efektywność spada dla większych instancji. Algorytm symulowanego wyżarzania cechuje się najmniejszą zmiennością efektywności w zależności od instancji problemu (najmniejsze odchylenia od funkcji uzyskanej z regresji liniowej).
 
 ## Zależność jakości rozwiązania końcowego od jakości rozwiązania początkowego (algorytmy przeszukiwania lokalnego)
 
@@ -127,15 +140,13 @@ Zamieszczone wykresy pokazują, że algorytmy stosunkowo szybko (już po 2 -- 3 
 Określono podobieństwo między rozwiązaniami znalezionymi przez algorytmy przeszukiwania lokalnego. Podobieństwo zostało zdefiniowane, jako liczba pozycji, na których rozwiązania mają równe wartości. Przykładowo:
 
 
-Permutacja 1                      Permutacja 2                       Podobieństwo
---------------------------------  --------------------------------  -------------
-2 9 10 1 11 4 5 6 7 0 3 8         2 9 4 1 11 10 6 0 7 5 3 8                     7
-2 9 10 1 11 4 5 6 7 0 3 8         2 9 4 1 11 10 6 0 7 5 3 8                     7
-2 9 10 1 11 4 5 6 7 0 3 8         7 10 9 11 1 4 5 6 2 0 3 8                     6
-8 3 6 0 5 10 4 1 7 11 9 2         8 3 0 5 10 6 4 9 7 11 1 2                     6
-2 9 4 1 11 10 6 0 7 5 3 8         2 9 4 1 11 10 6 0 7 5 3 8                    12
-8 3 0 6 10 5 11 4 7 1 9 2         8 3 0 5 10 6 4 9 7 11 1 2                     6
-5 13 4 6 11 1 12 8 7 10 0 3 2 9   5 13 4 7 9 1 12 8 10 11 0 3 2 6               9
+Permutacja 1                Permutacja 2                 Podobieństwo
+--------------------------  --------------------------  -------------
+2 1 4 5 11 10 6 0 9 7 3 8   2 9 4 1 11 10 6 0 7 5 3 8               8
+8 3 4 0 6 11 1 5 2 9 10 7   8 3 4 0 1 5 11 9 2 6 10 7               7
+7 9 1 10 11 6 4 0 2 5 3 8   2 9 4 1 11 10 6 0 7 5 3 8               6
+7 9 1 10 11 6 4 0 2 5 3 8   7 9 1 10 11 4 6 5 2 0 3 8               8
+7 9 1 10 11 4 6 5 2 0 3 8   7 2 6 9 11 4 10 5 1 0 3 8               7
 
 Sporządzono wykresy próbując zbadać zależność między podobieństwem, a różnicą w jakości dla par rozwiązań. Badanie przeprowadzono na dwóch niewielkich instancjach.
 

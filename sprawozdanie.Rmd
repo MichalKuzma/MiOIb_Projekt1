@@ -154,6 +154,14 @@ Pocz¹tkowa permutacja jest tworzona w sposób losowy, dziêki czemu heurystyka mo¿
   }
 ```
 
+### Simulated Annealing
+
+TODO: Describe
+
+### Tabu Search
+
+TODO: Describe
+
 ## Porównanie odleg³oœci od optimum rozwi¹zañ uzyskanych przez badane algorytmy
 
 Do okreœlenia odleg³oœci od optimum globalnego wykorzystano miarê opisan¹ wzorem:
@@ -164,6 +172,7 @@ Dla ka¿dej badanej instancji wykonano 10 pomiarów. Porównano wyniki œrednie oraz
 
 ```{r results_compare}
 data_results <- data %>%
+  filter(inst_size < 100) %>%
   summarySE(measurevar = "result_dist", groupvars = c("name", "inst_size"))
 
 ggplot(data_results %>% filter(name != "Random"), aes(x = inst_size, y = result_dist)) +
@@ -173,7 +182,6 @@ ggplot(data_results %>% filter(name != "Random"), aes(x = inst_size, y = result_
   ggtitle("Œrednia odleg³oœæ uzyskanego przez algorytm rozwi¹zania od optimum") +
   xlab("Rozmiar instancji problemu") +
   ylab("Odleg³oœæ od optimum") +
-  geom_smooth(method = "lm") +
   theme_bw()
 
 ggplot(data_results %>% filter(name == "Random"), aes(x = inst_size, y = result_dist)) +
@@ -182,7 +190,6 @@ ggplot(data_results %>% filter(name == "Random"), aes(x = inst_size, y = result_
   ggtitle("Œrednia odleg³oœæ uzyskanego przez algorytm losowy rozwi¹zania od optimum") +
   xlab("Rozmiar instancji problemu") +
   ylab("Odleg³oœæ od optimum") +
-  geom_smooth(method = "lm") +
   theme_bw()
 ```
 
@@ -193,23 +200,25 @@ ggplot(data_results %>% filter(name != "Random"), aes(x = inst_size, y = min)) +
   ggtitle("Minimalna odleg³oœæ uzyskanego przez algorytm rozwi¹zania od optimum") +
   xlab("Rozmiar instancji problemu") +
   ylab("Odleg³oœæ od optimum") +
-  geom_smooth(method = "lm") +
   theme_bw()
 
 ggplot(data_results %>% filter(name == "Random"), aes(x = inst_size, y = min)) +
   geom_point() +
-  ggtitle("Minimalna odleg³oœæ uzyskanego przez algorytm losowy rozwi¹zania od optimum") +
+  ggtitle("Minimalna odleg³oœæ od optimum - algorytm losowy") +
   xlab("Rozmiar instancji problemu") +
   ylab("Odleg³oœæ od optimum") +
-  geom_smooth(method = "lm") +
   theme_bw()
 ```
 
+Ze wzglêdu na diametralnie gorsze wyniki, dla lepszej czytelnoœci, wykres algorytmu *Random Search* przedstawiono na odrêbnej skali.
+
 Zaobserwowaæ mo¿na wysok¹ niestabilnoœæ uzyskanych wyników dla niektórych instancji problemu (du¿e odchylenia standardowe dla ka¿dego algorytmu). Mo¿e to byæ spowodowane skomplikowan¹ przestrzeni¹ rozwi¹zañ. 
 
-Metod¹ regresji liniowej wyznaczono zale¿noœci miêdzy wielkoœci¹ instancji, a wzglêdn¹ odleg³oœci¹ rozwi¹zania od optimum. Poza algorytmem losowym ¿aden nie wykazuje wyraŸnej zale¿noœci pomiêdzy wielkoœci¹ instancji, a odleg³oœci¹ znalezionego rozwi¹zania od optimum. Random wraz ze wzrostem wielkoœci instancji zwraca rozwi¹zania coraz bli¿sze optymalnemu. Jest to zwi¹zane ze znacznie d³u¿czym czasem wykonywania algorytmu (takim, jak dla przeszukiwania lokalnego na danej instancji).
+Metod¹ regresji liniowej wyznaczono zale¿noœci miêdzy wielkoœci¹ instancji, a wzglêdn¹ odleg³oœci¹ rozwi¹zania od optimum. Wszystkie badane algorytmy zdaj¹ siê wykazywaæ niezale¿noœæ jakoœci rozwi¹zania koñcowego (odleg³oœci od optimum) od wielkoœci instancji. Ró¿nice w jakoœci koñcowego rozwi¹zania powodowane s¹ raczej ró¿nym stopniem skomplikowania powierzchni rozwi¹zañ dla danych instancji.
 
 Algorytmy *Greedy* i *Steepest* osi¹gaj¹ bardzo podobne œrednie rozwi¹zania. Zaproponowana heurystyka zwraca nieznacznie gorsze rozwi¹zania od algorytmów przeszukiwania lokalnego, natomiast *Random* osi¹ga rozwi¹zania daleko gorsze od pozosta³ych (poza prostymi instancjami).
+
+Algorytmy Simulated Annealing (SA) i Tabu Search (TS) wykazuj¹ wiêksz¹ niezale¿noœæ od stopnia skomplikowania instancji (mniejsze odchylenia od wyliczonej funkcji liniowej), szczególnie uwzglêdniaj¹c rozwi¹zanie najlepsze ze znalezionych
 
 ## Porównanie czasów wykonywania algorytmów
 
@@ -217,7 +226,7 @@ Poniewa¿ warunkiem stopu algorytmu *Random* jest up³yniêcie okreœlonego czasu (œ
 
 ```{r times_compare}
 data_times <- data %>%
-  filter(name != "Random") %>%
+  filter(name != "Random", inst_size < 100) %>%
   summarySE(measurevar = "time", groupvars = c("name", "inst_size"))
 
 ggplot(data_times, aes(x = inst_size, y = time)) +
@@ -227,7 +236,6 @@ ggplot(data_times, aes(x = inst_size, y = time)) +
   ggtitle("Œredni czas dzia³ania algorytmu w milisekundach") +
   xlab("Rozmiar instancji problemu") +
   ylab("Czas dzia³ania algorytmu") +
-  geom_smooth(method = "lm") +
   theme_bw()
 ```
 
@@ -238,11 +246,10 @@ ggplot(data_times, aes(x = inst_size, y = min)) +
   ggtitle("Najkrótszy czas dzia³ania algorytmu w milisekundach") +
   xlab("Rozmiar instancji problemu") +
   ylab("Czas dzia³ania algorytmu") +
-  geom_smooth(method = "lm") +
   theme_bw()
 ```
 
-Przedstawione powy¿ej wykresy czasu trwania iteracji algorytmów pokazuj¹ wzrost czasu trwania algorytmu wraz ze wzrostem wielkoœci instancji (czego mo¿na siê by³o spodziewaæ). 
+Przedstawione powy¿ej wykresy czasu trwania iteracji algorytmów pokazuj¹ wielomianowy wzrost czasu trwania algorytmu wraz ze wzrostem wielkoœci instancji (czego mo¿na siê by³o spodziewaæ). Dla algorytmów *SA* i *TS* czas roœnie znacznie szybciej od pozosta³ych (wielomian wy¿szego stopnia).
 
 Wykresy œredniego czasu dzia³ania pokazuj¹ rosn¹c¹ niestabilnoœæ mierzonego czasu (która nie jest jednak zale¿na jedynie od wielkoœci instancji). Najmniejsze odchylenia zanotowano dla algorytmu *Steepest LS*, co by³o do przewidzenia. W ka¿dym kroku oceni on tak¹ sam¹ liczbê s¹siadów (co zajmie tyle samo czasu), wiêc czas trwania algorytmu zale¿y wy³¹cznie od liczby wykonanych kroków. Poniewa¿ dla danej instancji wykonuje on zawsze mniej wiêcej tyle samo kroków (potwierdzaj¹ to niewielkie odchylenia standardowe na wykresie rozmiar instancji / liczba kroków), liczba odwiedzonych s¹siadów, a wiêc i czas trwania algorytmu cechuj¹ siê wysok¹ stabilnoœci¹.
 
@@ -252,11 +259,11 @@ Trudno jednoznacznie okreœliæ, który z algorytmów przeszukiwania lokalnego dzia³
 
 Przeprowadzono analizê efektywnoœci algorytmów. Miarê efektywnoœci opracowano wed³ug za³o¿enia, ¿e najwy¿sz¹ efektywnoœæ ma algorytm, który zwraca rozwi¹zanie optymalne w czasie zerowym. Miarê efektywnoœci ograniczono do przedzia³u $[0, 1]$ wed³ug poni¿szego wzoru:
 
-$efectiveness = \frac{1 + dist + time}{(dist + 1) * (time + 1)}$
+$efectiveness = \frac{1}{(dist + 1) * (time / 60000 + 1)}$
 
 ```{r efectiveness_compare}
 data_ef <- data %>%
-  mutate(ef = (1 + result_dist + time)/ ((result_dist + 1) * (time + 1))) %>%
+  mutate(ef = 1/ ((result_dist + 1) * (time/60000 + 1))) %>%
   summarySE(measurevar = "ef", groupvars = c("name", "inst_size"))
 
 ggplot(data_ef %>% filter(name != "Random"), aes(x = inst_size, y = ef)) +
@@ -265,19 +272,17 @@ ggplot(data_ef %>% filter(name != "Random"), aes(x = inst_size, y = ef)) +
   ggtitle("Œrednia efektywnoœæ algorytmu dla danego rozmiaru instancji problemu") +
   xlab("Rozmiar instancji problemu") +
   ylab("Efektywnoœæ") +
-  geom_smooth(method = "lm") +
   theme_bw()
 
 ggplot(data_ef %>% filter(name == "Random"), aes(x = inst_size, y = ef)) +
   geom_point() +
-  ggtitle("Œrednia efektywnoœæ algorytmu losowego dla danego rozmiaru instancji problemu") +
+  ggtitle("Œrednia efektywnoœæ - algorytm losowy") +
   xlab("Rozmiar instancji problemu") +
   ylab("Efektywnoœæ") +
-  geom_smooth(method = "lm") +
   theme_bw()
 ```
 
-pierwsz¹ obserwacj¹ jest wyraŸnie gorsza efektywnoœæ algorytmu przeszukiwania losowego. Algorytmy *Symulowane wy¿arzanie* i *Tabu Search*, a szczególnie ten pierwszy, wykazuj¹ wiêksz¹ efektywnoœæ dla wielu instancji testowych, ni¿ przeszukiwanie lokalne. Algorytm symulowanego wy¿arzania cechuje siê najmniejsz¹ zmiennoœci¹ efektywnoœci w zale¿noœci od instancji problemu (najmniejsze odchylenia od funkcji uzyskanej z regresji liniowej).
+Pierwsz¹ obserwacj¹ jest wyraŸnie gorsza efektywnoœæ algorytmu przeszukiwania losowego. Algorytmy *SA* i *TS*, a szczególnie ten pierwszy, wykazuj¹ wiêksz¹ efektywnoœæ dla wielu instancji testowych ni¿ przeszukiwanie lokalne, jednak przez szybciej rosn¹cy czas, ich efektywnoœæ spada dla wiêkszych instancji. Algorytm symulowanego wy¿arzania cechuje siê najmniejsz¹ zmiennoœci¹ efektywnoœci w zale¿noœci od instancji problemu (najmniejsze odchylenia od funkcji uzyskanej z regresji liniowej).
 
 ## Zale¿noœæ jakoœci rozwi¹zania koñcowego od jakoœci rozwi¹zania pocz¹tkowego (algorytmy przeszukiwania lokalnego)
 
@@ -352,7 +357,6 @@ for (i_name in unique(data_results_similarity$inst_name)) {
   
   print(ggplot(instance_data, aes(x = similarity, y = score_dif)) +
     geom_point() +
-    geom_smooth(method = "lm") +
     ggtitle(i_name) +
     xlab("Podobieñstwo rozwi¹zañ") +
     ylab("Ró¿nica jakoœci rozwi¹zañ") +
